@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Example logic to determine weather condition
     const countAbove1_4 = cloudValues.filter((value) => value > 1.4).length;
     let weatherCondition = "Weather condition not determined.";
-    if (countAbove1_4 > 5) {
+    if (countAbove1_4 > 3) {
       weatherCondition = "Weather is Fine ☀️";
     } else {
       weatherCondition = "Weather is Bad 🌧️";
