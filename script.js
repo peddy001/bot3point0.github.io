@@ -124,15 +124,30 @@ document.addEventListener("DOMContentLoaded", function () {
     page.classList.remove("hidden");
   }
 
-  function performAnalysis(cloudValues, analysisType) {
-    // Example logic to determine weather condition
-    const countAbove1_4 = cloudValues.filter((value) => value > 1.4).length;
-    let weatherCondition = "Weather condition not determined.";
-    if (countAbove1_4 < 3) {
-      weatherCondition = "Weather is Fine ☀️";
-    } else {
-      weatherCondition = "Weather is Bad 🌧️";
-    }
+function performAnalysis(cloudValues, analysisType) {
+  // Log cloud values to check what we're working with
+  console.log("Cloud Values:", cloudValues);
+  
+  // Count how many values exceed the threshold
+  const threshold = 1.4;
+  const countAboveThreshold = cloudValues.filter((value) => value > threshold).length;
+
+  // Log the count for debugging
+  console.log(`Count above ${threshold}:`, countAboveThreshold);
+
+  // Determine the weather condition based on the count
+  let weatherCondition = "Weather condition not determined.";
+  const minCountForGoodWeather = 5;
+
+  if (countAboveThreshold >= minCountForGoodWeather) {
+    weatherCondition = "Weather is Fine ☀️";
+  } else {
+    weatherCondition = "Weather is Bad 🌧️";
+  }
+
+  // Return the analysis result
+  return `Performed ${analysisType} analysis on ${cloudValues.length} clouds. ${weatherCondition}`;
+}
 
     // Add the analysis type and weather condition to the result
     return `Performed ${analysisType} analysis on ${cloudValues.length} clouds. ${weatherCondition}`;
