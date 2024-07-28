@@ -43,9 +43,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const loginForm = document.getElementById("loginForm");
   loginForm.addEventListener("submit", function (event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent default form submission
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
+
+    console.log("Username:", username); // Debugging: Check entered username
+    console.log("Password:", password); // Debugging: Check entered password
+
     // Simple authentication check
     if (username === "GHOST" && password === "Discipline") {
       isAuthenticated = true;
@@ -55,7 +59,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  const analysisForm = document.getElementById("analysisForm");
   const generateFieldsButton = document.getElementById("generateFields");
   const cloudFieldsContainer = document.getElementById("cloudFields");
   const analyzeCloudsButton = document.getElementById("analyzeClouds");
@@ -81,6 +84,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const cloudValues = Array.from(
       document.getElementsByClassName("cloudValue")
     ).map((input) => parseFloat(input.value));
+
+    console.log("Cloud Values:", cloudValues); // Debugging: Check cloud values
+
     const analysisType = document.getElementById("analysisType").value;
     const dateTime = new Date().toLocaleString();
 
@@ -124,30 +130,16 @@ document.addEventListener("DOMContentLoaded", function () {
     page.classList.remove("hidden");
   }
 
-function performAnalysis(cloudValues, analysisType) {
-  // Log cloud values to check what we're working with
-  console.log("Cloud Values:", cloudValues);
-  
-  // Count how many values exceed the threshold
-  const threshold = 1.4;
-  const countAboveThreshold = cloudValues.filter((value) => value > threshold).length;
+  function performAnalysis(cloudValues, analysisType) {
+    console.log("Performing Analysis with cloud values:", cloudValues); // Debugging
 
-  // Log the count for debugging
-  console.log(`Count above ${threshold}:`, countAboveThreshold);
-
-  // Determine the weather condition based on the count
-  let weatherCondition = "Weather condition not determined.";
-  const minCountForGoodWeather = 5;
-
-  if (countAboveThreshold >= minCountForGoodWeather) {
-    weatherCondition = "Weather is Fine ☀️";
-  } else {
-    weatherCondition = "Weather is Bad 🌧️";
-  }
-
-  // Return the analysis result
-  return `Performed ${analysisType} analysis on ${cloudValues.length} clouds. ${weatherCondition}`;
-}
+    const countAbove1_4 = cloudValues.filter((value) => value > 1.4).length;
+    let weatherCondition = "Weather condition not determined.";
+    if (countAbove1_4 > 5) {
+      weatherCondition = "Weather is Fine ☀️";
+    } else {
+      weatherCondition = "Weather is Bad 🌧️";
+    }
 
     // Add the analysis type and weather condition to the result
     return `Performed ${analysisType} analysis on ${cloudValues.length} clouds. ${weatherCondition}`;
@@ -186,18 +178,13 @@ function performAnalysis(cloudValues, analysisType) {
 
     canvas.chart = chart;
   }
-function storeGraphData(values, dateTime) {
-  // Determine the weather condition based on cloud values
-  const countAbove1_4 = values.filter(value => value > 1.4).length;
-  const weatherCondition = countAbove1_4 > 5 ? "Fine" : "Bad";
 
-  // Retrieve existing history or initialize an empty array
-  const graphsHistory = JSON.parse(localStorage.getItem("graphsHistory")) || [];
-
-  // Add the new graph data with weather condition
-  graphsHistory.push({ values, dateTime, weatherCondition });
-  localStorage.setItem("graphsHistory", JSON.stringify(graphsHistory));
-}
+  function storeGraphData(values, dateTime) {
+    const graphsHistory =
+      JSON.parse(localStorage.getItem("graphsHistory")) || [];
+    graphsHistory.push({ values, dateTime });
+    localStorage.setItem("graphsHistory", JSON.stringify(graphsHistory));
+  }
 
   function displayGraphsHistory() {
     graphsHistoryContainer.innerHTML = "";
@@ -249,64 +236,7 @@ function storeGraphData(values, dateTime) {
         },
         options: {
           scales: {
-            y: {function displayGraphsHistory() {
-  graphsHistoryContainer.innerHTML = "";
-  const graphsHistory = JSON.parse(localStorage.getItem("graphsHistory")) || [];
-
-  if (!Array.isArray(graphsHistory)) {
-    console.error("Invalid format in localStorage for graphsHistory.");
-    return;
-  }
-
-  graphsHistory.forEach((graph, index) => {
-    if (!graph.values || !Array.isArray(graph.values) || !graph.weatherCondition) {
-      console.error(`Invalid data format for graph ${index + 1}.`);
-      return;
-    }
-
-    const graphContainer = document.createElement("div");
-    graphContainer.className = "graph-container history-graph";
-
-    const title = document.createElement("div");
-    title.className = "graph-title";
-    title.innerText = `Graph ${index + 1} - ${graph.dateTime} - Weather: ${graph.weatherCondition}`;
-    graphContainer.appendChild(title);
-
-    const canvas = document.createElement("canvas");
-    canvas.className = "history-graph-canvas";
-    graphContainer.appendChild(canvas);
-
-    graphsHistoryContainer.appendChild(graphContainer);
-
-    // Render the graph
-    new Chart(canvas, {
-      type: "bar",
-      data: {
-        labels: graph.values.map((_, index) => `Cloud ${index + 1}`),
-        datasets: [
-          {
-            label: "Cloud Values",
-            data: graph.values,
-            backgroundColor: graph.values.map((value) => {
-              if (value >= 1 && value < 2) return "blue";
-              if (value >= 2 && value < 10) return "purple";
-              if (value >= 10 && value <= 100) return "pink";
-              return "grey"; // default color
-            })
-          }
-        ]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-  });
-}
-
+            y: {
               beginAtZero: true
             }
           }
