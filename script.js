@@ -43,13 +43,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const loginForm = document.getElementById("loginForm");
   loginForm.addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
-
-    console.log("Username:", username); // Debugging: Check entered username
-    console.log("Password:", password); // Debugging: Check entered password
-
     // Simple authentication check
     if (username === "GHOST" && password === "Discipline") {
       isAuthenticated = true;
@@ -59,6 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  const analysisForm = document.getElementById("analysisForm");
   const generateFieldsButton = document.getElementById("generateFields");
   const cloudFieldsContainer = document.getElementById("cloudFields");
   const analyzeCloudsButton = document.getElementById("analyzeClouds");
@@ -84,13 +81,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const cloudValues = Array.from(
       document.getElementsByClassName("cloudValue")
     ).map((input) => parseFloat(input.value));
-
-    console.log("Cloud Values:", cloudValues); // Debugging: Check cloud values
-
     const analysisType = document.getElementById("analysisType").value;
     const dateTime = new Date().toLocaleString();
 
-    // Perform analysis and get the result
+    // Perform analysis and get result
     const { message, condition } = performAnalysis(cloudValues, analysisType);
     cloudResult.innerText = message;
 
@@ -130,26 +124,28 @@ document.addEventListener("DOMContentLoaded", function () {
     page.classList.remove("hidden");
   }
 
-function performAnalysis(cloudValues, analysisType) {
-  console.log("Performing Analysis with cloud values:", cloudValues); // Debugging
+  function performAnalysis(cloudValues, analysisType) {
+    console.log("Performing Analysis with cloud values:", cloudValues); // Debugging
 
-  // Count how many values are greater than 1.4
-  const countAbove1_4 = cloudValues.filter((value) => value > 1.4).length;
+    // Count how many values are 1.4 or less
+    const countLessOrEqual1_4 = cloudValues.filter((value) => value <= 1.4).length;
 
-  // Determine the weather condition based on the count
-  let weatherCondition;
-  if (countAbove1_4 > 3) {
-    weatherCondition = "Weather is Bad 🌧️";
-  } else {
-    weatherCondition = "Weather is Fine ☀️";
+    // Determine the weather condition based on whether most values are <= 1.4
+    let weatherCondition;
+    if (countLessOrEqual1_4 > cloudValues.length / 2) {
+      // More than half of the values are 1.4 or less
+      weatherCondition = "Weather is Bad 🌧️";
+    } else {
+      // Less than or equal to half of the values are 1.4 or less
+      weatherCondition = "Weather is Fine ☀️";
+    }
+
+    // Return the analysis result and weather condition
+    return {
+      message: `Performed ${analysisType} analysis on ${cloudValues.length} clouds. ${weatherCondition}`,
+      condition: weatherCondition
+    };
   }
-
-  // Return the analysis result and weather condition
-  return {
-    message: `Performed ${analysisType} analysis on ${cloudValues.length} clouds. ${weatherCondition}`,
-    condition: weatherCondition
-  };
-}
 
   function generateBarGraph(canvas, values) {
     if (canvas.chart) {
@@ -213,13 +209,8 @@ function performAnalysis(cloudValues, analysisType) {
 
       const title = document.createElement("div");
       title.className = "graph-title";
-      title.innerText = `Graph ${index + 1} - ${graph.dateTime}`;
+      title.innerText = `Graph ${index + 1} - ${graph.dateTime} - ${graph.condition}`;
       graphContainer.appendChild(title);
-
-      const condition = document.createElement("div");
-      condition.className = "weather-condition";
-      condition.innerText = `Condition: ${graph.condition}`;
-      graphContainer.appendChild(condition);
 
       const canvas = document.createElement("canvas");
       canvas.className = "history-graph-canvas";
