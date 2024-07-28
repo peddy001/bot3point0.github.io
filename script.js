@@ -130,23 +130,26 @@ document.addEventListener("DOMContentLoaded", function () {
     page.classList.remove("hidden");
   }
 
-  function performAnalysis(cloudValues, analysisType) {
-    console.log("Performing Analysis with cloud values:", cloudValues); // Debugging
+function performAnalysis(cloudValues, analysisType) {
+  console.log("Performing Analysis with cloud values:", cloudValues); // Debugging
 
-    const countAbove1_4 = cloudValues.filter((value) => value > 1.4).length;
-    let weatherCondition = "Weather condition not determined.";
-    if (countAbove1_4 > 5) {
-      weatherCondition = "Weather is Fine ☀️";
-    } else {
-      weatherCondition = "Weather is Bad 🌧️";
-    }
+  // Count how many values are greater than 1.4
+  const countAbove1_4 = cloudValues.filter((value) => value > 1.4).length;
 
-    // Return the analysis result and weather condition
-    return {
-      message: `Performed ${analysisType} analysis on ${cloudValues.length} clouds. ${weatherCondition}`,
-      condition: weatherCondition
-    };
+  // Determine the weather condition based on the count
+  let weatherCondition;
+  if (countAbove1_4 > 3) {
+    weatherCondition = "Weather is Bad 🌧️";
+  } else {
+    weatherCondition = "Weather is Fine ☀️";
   }
+
+  // Return the analysis result and weather condition
+  return {
+    message: `Performed ${analysisType} analysis on ${cloudValues.length} clouds. ${weatherCondition}`,
+    condition: weatherCondition
+  };
+}
 
   function generateBarGraph(canvas, values) {
     if (canvas.chart) {
