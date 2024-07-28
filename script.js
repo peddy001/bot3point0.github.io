@@ -46,8 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
     event.preventDefault();
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
-    console.log("Username:", username); // Debugging
-    console.log("Password:", password); // Debugging
     // Simple authentication check
     if (username === "GHOST" && password === "Discipline") {
       isAuthenticated = true;
@@ -94,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
     generateBarGraph(cloudBarGraphCanvas, cloudValues);
 
     // Store graph data in localStorage
-    storeGraphData(cloudValues, resultText, dateTime);
+    storeGraphData(cloudValues, dateTime);
 
     // Show reset button and hide analyze button
     resetButton.classList.remove("hidden");
@@ -174,10 +172,10 @@ document.addEventListener("DOMContentLoaded", function () {
     canvas.chart = chart;
   }
 
-  function storeGraphData(values, resultText, dateTime) {
+  function storeGraphData(values, dateTime) {
     const graphsHistory =
       JSON.parse(localStorage.getItem("graphsHistory")) || [];
-    graphsHistory.push({ values, resultText, dateTime });
+    graphsHistory.push({ values, dateTime });
     localStorage.setItem("graphsHistory", JSON.stringify(graphsHistory));
   }
 
@@ -204,11 +202,6 @@ document.addEventListener("DOMContentLoaded", function () {
       title.className = "graph-title";
       title.innerText = `Graph ${index + 1} - ${graph.dateTime}`;
       graphContainer.appendChild(title);
-
-      const weatherCondition = document.createElement("div");
-      weatherCondition.className = "weather-condition";
-      weatherCondition.innerText = graph.resultText;
-      graphContainer.appendChild(weatherCondition);
 
       const canvas = document.createElement("canvas");
       canvas.className = "history-graph-canvas";
