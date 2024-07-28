@@ -90,15 +90,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const analysisType = document.getElementById("analysisType").value;
     const dateTime = new Date().toLocaleString();
 
-    // Perform analysis and display result
-    const resultText = performAnalysis(cloudValues, analysisType);
-    cloudResult.innerText = resultText;
+    // Perform analysis and get the result
+    const { message, condition } = performAnalysis(cloudValues, analysisType);
+    cloudResult.innerText = message;
 
     // Generate and display bar graph
     generateBarGraph(cloudBarGraphCanvas, cloudValues);
 
     // Store graph data in localStorage
-    storeGraphData(cloudValues, dateTime);
+    storeGraphData(cloudValues, dateTime, condition);
 
     // Show reset button and hide analyze button
     resetButton.classList.remove("hidden");
@@ -141,8 +141,11 @@ document.addEventListener("DOMContentLoaded", function () {
       weatherCondition = "Weather is Bad 🌧️";
     }
 
-    // Add the analysis type and weather condition to the result
-    return `Performed ${analysisType} analysis on ${cloudValues.length} clouds. ${weatherCondition}`;
+    // Return the analysis result and weather condition
+    return {
+      message: `Performed ${analysisType} analysis on ${cloudValues.length} clouds. ${weatherCondition}`,
+      condition: weatherCondition
+    };
   }
 
   function generateBarGraph(canvas, values) {
@@ -179,10 +182,10 @@ document.addEventListener("DOMContentLoaded", function () {
     canvas.chart = chart;
   }
 
-  function storeGraphData(values, dateTime) {
+  function storeGraphData(values, dateTime, condition) {
     const graphsHistory =
       JSON.parse(localStorage.getItem("graphsHistory")) || [];
-    graphsHistory.push({ values, dateTime });
+    graphsHistory.push({ values, dateTime, condition });
     localStorage.setItem("graphsHistory", JSON.stringify(graphsHistory));
   }
 
@@ -209,6 +212,11 @@ document.addEventListener("DOMContentLoaded", function () {
       title.className = "graph-title";
       title.innerText = `Graph ${index + 1} - ${graph.dateTime}`;
       graphContainer.appendChild(title);
+
+      const condition = document.createElement("div");
+      condition.className = "weather-condition";
+      condition.innerText = `Condition: ${graph.condition}`;
+      graphContainer.appendChild(condition);
 
       const canvas = document.createElement("canvas");
       canvas.className = "history-graph-canvas";
