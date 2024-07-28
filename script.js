@@ -186,13 +186,18 @@ function performAnalysis(cloudValues, analysisType) {
 
     canvas.chart = chart;
   }
+function storeGraphData(values, dateTime) {
+  // Determine the weather condition based on cloud values
+  const countAbove1_4 = values.filter(value => value > 1.4).length;
+  const weatherCondition = countAbove1_4 > 5 ? "Fine" : "Bad";
 
-  function storeGraphData(values, dateTime) {
-    const graphsHistory =
-      JSON.parse(localStorage.getItem("graphsHistory")) || [];
-    graphsHistory.push({ values, dateTime });
-    localStorage.setItem("graphsHistory", JSON.stringify(graphsHistory));
-  }
+  // Retrieve existing history or initialize an empty array
+  const graphsHistory = JSON.parse(localStorage.getItem("graphsHistory")) || [];
+
+  // Add the new graph data with weather condition
+  graphsHistory.push({ values, dateTime, weatherCondition });
+  localStorage.setItem("graphsHistory", JSON.stringify(graphsHistory));
+}
 
   function displayGraphsHistory() {
     graphsHistoryContainer.innerHTML = "";
@@ -244,7 +249,64 @@ function performAnalysis(cloudValues, analysisType) {
         },
         options: {
           scales: {
-            y: {
+            y: {function displayGraphsHistory() {
+  graphsHistoryContainer.innerHTML = "";
+  const graphsHistory = JSON.parse(localStorage.getItem("graphsHistory")) || [];
+
+  if (!Array.isArray(graphsHistory)) {
+    console.error("Invalid format in localStorage for graphsHistory.");
+    return;
+  }
+
+  graphsHistory.forEach((graph, index) => {
+    if (!graph.values || !Array.isArray(graph.values) || !graph.weatherCondition) {
+      console.error(`Invalid data format for graph ${index + 1}.`);
+      return;
+    }
+
+    const graphContainer = document.createElement("div");
+    graphContainer.className = "graph-container history-graph";
+
+    const title = document.createElement("div");
+    title.className = "graph-title";
+    title.innerText = `Graph ${index + 1} - ${graph.dateTime} - Weather: ${graph.weatherCondition}`;
+    graphContainer.appendChild(title);
+
+    const canvas = document.createElement("canvas");
+    canvas.className = "history-graph-canvas";
+    graphContainer.appendChild(canvas);
+
+    graphsHistoryContainer.appendChild(graphContainer);
+
+    // Render the graph
+    new Chart(canvas, {
+      type: "bar",
+      data: {
+        labels: graph.values.map((_, index) => `Cloud ${index + 1}`),
+        datasets: [
+          {
+            label: "Cloud Values",
+            data: graph.values,
+            backgroundColor: graph.values.map((value) => {
+              if (value >= 1 && value < 2) return "blue";
+              if (value >= 2 && value < 10) return "purple";
+              if (value >= 10 && value <= 100) return "pink";
+              return "grey"; // default color
+            })
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  });
+}
+
               beginAtZero: true
             }
           }
