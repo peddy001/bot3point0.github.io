@@ -133,21 +133,46 @@ document.addEventListener("DOMContentLoaded", function () {
     resetButton.classList.add("hidden");
   }
 
-  function performAnalysis(cloudValues, analysisType) {
-    console.log("Performing Analysis with cloud values:", cloudValues); // Debugging
+  function performAnalysis(cloudValues, analysisType, threshold = 1.4) {
+  // Validate input values
+  if (!Array.isArray(cloudValues) || cloudValues.length === 0) {
+    return {
+      message: "No valid cloud values provided.",
+      condition: "Unknown"
+    };
+  }
 
-    // Count how many values are 1.4 or less
-    const countLessOrEqual1_4 = cloudValues.filter((value) => value <= 1.4).length;
+  // Ensure all values are valid numbers
+  const validCloudValues = cloudValues.filter((value) => !isNaN(value) && value !== null && value !== undefined);
+  if (validCloudValues.length !== cloudValues.length) {
+    console.warn("Some invalid cloud values were filtered out.");
+  }
 
-    // Determine the weather condition based on whether most values are <= 1.4
-    let weatherCondition;
-    if (countLessOrEqual1_4 > cloudValues.length / 2) {
-      // More than half of the values are 1.4 or less
-      weatherCondition = "Weather is Bad 🌧️";
-    } else {
-      // Less than or equal to half of the values are 1.4 or less
-      weatherCondition = "Weather is Fine ☀️";
-    }
+  // Log the valid cloud values for debugging
+  console.log("Performing Analysis with cloud values:", validCloudValues);
+
+  // Count how many values are less than or equal to the threshold
+  const countLessOrEqualThreshold = validCloudValues.filter((value) => value <= threshold).length;
+
+  // Determine the weather condition based on whether most values are <= threshold
+  let weatherCondition;
+  if (countLessOrEqualThreshold > validCloudValues.length / 2) {
+    // More than half of the values are <= threshold
+    weatherCondition = "Weather is Bad 🌧️";
+  } else {
+    // Less than or equal to half of the values are <= threshold
+    weatherCondition = "Weather is Fine ☀️";
+  }
+
+  // Construct the result message
+  const message = `Performed ${analysisType} analysis on ${validCloudValues.length} cloud values. ${weatherCondition}`;
+
+  // Return the analysis result and weather condition
+  return {
+    message,
+    condition: weatherCondition
+  };
+}
 
     // Return the analysis result and weather condition
     return {
