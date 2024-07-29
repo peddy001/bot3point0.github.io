@@ -254,10 +254,10 @@ function performAnalysis(cloudValues, analysisType) {
               label: "Cloud Values",
               data: graph.values,
               backgroundColor: graph.values.map((value) => {
-                if (value >= 1 && value < 2) return "blue";
-                if (value >= 2 && value < 10) return "purple";
-                if (value >= 10 && value <= 100) return "pink";
-                return "grey"; // default color
+                   if (value >= 1.0 && value < 1.99) return "blue";
+                   if (value >= 2.0 && value < 9.99) return "purple";
+                   if (value >= 10.0 && value <= 300) return "pink";
+              return "grey"; // default color
               })
             }
           ]
