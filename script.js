@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Simple authentication check
     if (username === "GHOST" && password === "Discipline") {
       isAuthenticated = true;
+      resetCloudAnalysisPage();
       showPage(cloudAnalysisPage);
     } else {
       alert("Invalid credentials.");
@@ -71,6 +72,9 @@ document.addEventListener("DOMContentLoaded", function () {
       input.type = "number";
       input.placeholder = `Cloud ${i + 1} value`;
       input.className = "cloudValue";
+      input.required = true;
+      input.min = "0";
+      input.step = "0.01";
       cloudFieldsContainer.appendChild(input);
     }
     analyzeCloudsButton.classList.remove("hidden");
@@ -84,15 +88,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const analysisType = document.getElementById("analysisType").value;
     const dateTime = new Date().toLocaleString();
 
-    // Perform analysis and display result
-    const resultText = performAnalysis(cloudValues, analysisType);
-    cloudResult.innerText = resultText;
+    // Perform analysis and get result
+    const { message, condition } = performAnalysis(cloudValues, analysisType);
+    cloudResult.innerText = message;
 
     // Generate and display bar graph
     generateBarGraph(cloudBarGraphCanvas, cloudValues);
 
     // Store graph data in localStorage
-    storeGraphData(cloudValues, dateTime);
+    storeGraphData(cloudValues, dateTime, condition);
 
     // Show reset button and hide analyze button
     resetButton.classList.remove("hidden");
@@ -100,6 +104,17 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   resetButton.addEventListener("click", function () {
+    resetCloudAnalysisPage();
+  });
+
+  function showPage(page) {
+    loginPage.classList.add("hidden");
+    cloudAnalysisPage.classList.add("hidden");
+    historyGraphsPage.classList.add("hidden");
+    page.classList.remove("hidden");
+  }
+
+  function resetCloudAnalysisPage() {
     cloudFieldsContainer.innerHTML = "";
     cloudResult.innerHTML = "";
 
@@ -115,29 +130,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Show the analyze button
     analyzeCloudsButton.classList.remove("hidden");
-  });
-
-  function showPage(page) {
-    loginPage.classList.add("hidden");
-    cloudAnalysisPage.classList.add("hidden");
-    historyGraphsPage.classList.add("hidden");
-    page.classList.remove("hidden");
+    resetButton.classList.add("hidden");
   }
 
-  function performAnalysis(cloudValues, analysisType) {
-    // Example logic to determine weather condition
-    const countAbove1_4 = cloudValues.filter((value) => value > 1.4).length;
-    let weatherCondition = "Weather condition not determined.";
-    if (countAbove1_4 > 5) {
-      weatherCondition = "Weather is Fine ☀️";
-    } else {
-      weatherCondition = "Weather is Bad 🌧️";
-    }
-
-    // Add the analysis type and weather condition to the result
-    return `Performed ${analysisType} analysis on ${cloudValues.length} clouds. ${weatherCondition}`;
+function performAnalysis(cloudValues, analysisType) {
+  // Validate input values
+  if (!Array.isArray(cloudValues) || cloudValues.length === 0) {
+    return {
+      message: "No valid cloud values provided.",
+      condition: "Unknown"
+    };
   }
 
+  // Ensure all values are valid numbers
+  const validCloudValues = cloudValues.filter((value) => !isNaN(value) && value !== null && value !== undefined);
+  if (validCloudValues.length !== cloudValues.length) {
+    console.warn("Some invalid cloud values were filtered out.");
+  }
+
+  // Log the valid cloud values for debugging
+  console.log("Performing Analysis with cloud values:", validCloudValues);
+
+  // Count how many values are less than 1.4
+  const countBelowThreshold = validCloudValues.filter((value) => value < 1.4).length;
+
+  // Determine the weather condition based on whether most values are below 1.4
+  let weatherCondition;
+  if (countBelowThreshold > validCloudValues.length / 2) {
+    // More than half of the values are below 1.4
+    weatherCondition = "🌧️❌Weather is Bad 🌧️❌";
+  } else {
+    // Less than or equal to half of the values are below 1.4
+    weatherCondition = "☀️✔️Weather is Fine ☀️✔️";
+  }
+
+  // Construct the result message
+  const message = `Performed ${analysisType} analysis on ${validCloudValues.length} cloud values. ${weatherCondition}`;
+
+  // Return the analysis result and weather condition
+  return {
+    message,
+    condition: weatherCondition
+  };
+}
   function generateBarGraph(canvas, values) {
     if (canvas.chart) {
       canvas.chart.destroy();
@@ -152,9 +187,9 @@ document.addEventListener("DOMContentLoaded", function () {
             label: "Cloud Values",
             data: values,
             backgroundColor: values.map((value) => {
-              if (value >= 1 && value < 2) return "blue";
-              if (value >= 2 && value < 10) return "purple";
-              if (value >= 10 && value <= 100) return "pink";
+              if (value >= 1.0 && value < 1.99) return "blue";
+              if (value >= 2.0 && value < 9.99) return "purple";
+              if (value >= 10.0 && value <= 300) return "pink";
               return "grey"; // default color
             })
           }
@@ -172,10 +207,10 @@ document.addEventListener("DOMContentLoaded", function () {
     canvas.chart = chart;
   }
 
-  function storeGraphData(values, dateTime) {
+  function storeGraphData(values, dateTime, condition) {
     const graphsHistory =
       JSON.parse(localStorage.getItem("graphsHistory")) || [];
-    graphsHistory.push({ values, dateTime });
+    graphsHistory.push({ values, dateTime, condition });
     localStorage.setItem("graphsHistory", JSON.stringify(graphsHistory));
   }
 
@@ -200,7 +235,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const title = document.createElement("div");
       title.className = "graph-title";
-      title.innerText = `Graph ${index + 1} - ${graph.dateTime}`;
+      title.innerText = `Graph ${index + 1} - ${graph.dateTime} - ${graph.condition}`;
       graphContainer.appendChild(title);
 
       const canvas = document.createElement("canvas");
