@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
     resetButton.classList.add("hidden");
   }
 
- function performAnalysis(cloudValues, analysisType) {
+function performAnalysis(cloudValues, analysisType) {
   // Validate input values
   if (!Array.isArray(cloudValues) || cloudValues.length === 0) {
     return {
@@ -158,10 +158,10 @@ document.addEventListener("DOMContentLoaded", function () {
   let weatherCondition;
   if (countBelowThreshold > validCloudValues.length / 2) {
     // More than half of the values are below 1.4
-    weatherCondition = "Weather is Bad 🌧️";
+    weatherCondition = "🌧️❌Weather is Bad 🌧️❌";
   } else {
     // Less than or equal to half of the values are below 1.4
-    weatherCondition = "Weather is Fine ☀️";
+    weatherCondition = "☀️✔️Weather is Fine ☀️✔️";
   }
 
   // Construct the result message
@@ -173,7 +173,6 @@ document.addEventListener("DOMContentLoaded", function () {
     condition: weatherCondition
   };
 }
-
   function generateBarGraph(canvas, values) {
     if (canvas.chart) {
       canvas.chart.destroy();
