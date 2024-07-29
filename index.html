@@ -37,9 +37,10 @@
       const analyzeCloudsButton = document.getElementById("analyzeClouds");
       const resultContainer = document.getElementById("result");
 
+      // Generate input fields based on the number of clouds
       generateFieldsButton.addEventListener("click", function () {
         const numberOfClouds = document.getElementById("numberOfClouds").value;
-        cloudFieldsContainer.innerHTML = "";
+        cloudFieldsContainer.innerHTML = ""; // Clear existing fields
         for (let i = 0; i < numberOfClouds; i++) {
           const input = document.createElement("input");
           input.type = "number";
@@ -47,18 +48,20 @@
           input.className = "cloudValue";
           cloudFieldsContainer.appendChild(input);
         }
-        analyzeCloudsButton.classList.remove("hidden");
+        analyzeCloudsButton.classList.remove("hidden"); // Show the analyze button
       });
 
+      // Perform cloud analysis on form submission
       analysisForm.addEventListener("submit", function (event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent form submission
         const cloudValues = Array.from(document.getElementsByClassName("cloudValue"))
                                  .map((input) => parseFloat(input.value));
-        const analysisType = "Simple"; // Example analysis type, can be extended as needed
+        const analysisType = "Simple"; // Example analysis type
         const { message } = performAnalysis(cloudValues, analysisType);
-        resultContainer.innerText = message;
+        resultContainer.innerText = message; // Display the result
       });
 
+      // Function to perform the cloud analysis
       function performAnalysis(cloudValues, analysisType) {
         // Validate input values
         if (!Array.isArray(cloudValues) || cloudValues.length === 0) {
