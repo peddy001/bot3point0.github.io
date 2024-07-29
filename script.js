@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Simple authentication check
     if (username === "GHOST" && password === "Discipline") {
       isAuthenticated = true;
+      resetCloudAnalysisPage();
       showPage(cloudAnalysisPage);
     } else {
       alert("Invalid credentials.");
@@ -71,6 +72,9 @@ document.addEventListener("DOMContentLoaded", function () {
       input.type = "number";
       input.placeholder = `Cloud ${i + 1} value`;
       input.className = "cloudValue";
+      input.required = true;
+      input.min = "0";
+      input.step = "0.01";
       cloudFieldsContainer.appendChild(input);
     }
     analyzeCloudsButton.classList.remove("hidden");
@@ -100,6 +104,17 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   resetButton.addEventListener("click", function () {
+    resetCloudAnalysisPage();
+  });
+
+  function showPage(page) {
+    loginPage.classList.add("hidden");
+    cloudAnalysisPage.classList.add("hidden");
+    historyGraphsPage.classList.add("hidden");
+    page.classList.remove("hidden");
+  }
+
+  function resetCloudAnalysisPage() {
     cloudFieldsContainer.innerHTML = "";
     cloudResult.innerHTML = "";
 
@@ -115,13 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Show the analyze button
     analyzeCloudsButton.classList.remove("hidden");
-  });
-
-  function showPage(page) {
-    loginPage.classList.add("hidden");
-    cloudAnalysisPage.classList.add("hidden");
-    historyGraphsPage.classList.add("hidden");
-    page.classList.remove("hidden");
+    resetButton.classList.add("hidden");
   }
 
   function performAnalysis(cloudValues, analysisType) {
