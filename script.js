@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
     resetButton.classList.add("hidden");
   }
 
-  function performAnalysis(cloudValues, analysisType, threshold = 1.4) {
+ function performAnalysis(cloudValues, analysisType) {
   // Validate input values
   if (!Array.isArray(cloudValues) || cloudValues.length === 0) {
     return {
@@ -151,16 +151,16 @@ document.addEventListener("DOMContentLoaded", function () {
   // Log the valid cloud values for debugging
   console.log("Performing Analysis with cloud values:", validCloudValues);
 
-  // Count how many values are less than or equal to the threshold
-  const countLessOrEqualThreshold = validCloudValues.filter((value) => value <= threshold).length;
+  // Count how many values are less than 1.4
+  const countBelowThreshold = validCloudValues.filter((value) => value < 1.4).length;
 
-  // Determine the weather condition based on whether most values are <= threshold
+  // Determine the weather condition based on whether most values are below 1.4
   let weatherCondition;
-  if (countLessOrEqualThreshold > validCloudValues.length / 2) {
-    // More than half of the values are <= threshold
+  if (countBelowThreshold > validCloudValues.length / 2) {
+    // More than half of the values are below 1.4
     weatherCondition = "Weather is Bad 🌧️";
   } else {
-    // Less than or equal to half of the values are <= threshold
+    // Less than or equal to half of the values are below 1.4
     weatherCondition = "Weather is Fine ☀️";
   }
 
@@ -173,13 +173,6 @@ document.addEventListener("DOMContentLoaded", function () {
     condition: weatherCondition
   };
 }
-
-    // Return the analysis result and weather condition
-    return {
-      message: `Performed ${analysisType} analysis on ${cloudValues.length} clouds. ${weatherCondition}`,
-      condition: weatherCondition
-    };
-  }
 
   function generateBarGraph(canvas, values) {
     if (canvas.chart) {
@@ -195,9 +188,9 @@ document.addEventListener("DOMContentLoaded", function () {
             label: "Cloud Values",
             data: values,
             backgroundColor: values.map((value) => {
-              if (value >= 1 && value < 2) return "blue";
-              if (value >= 2 && value < 10) return "purple";
-              if (value >= 10 && value <= 100) return "pink";
+              if (value >= 1.0 && value < 1.99) return "blue";
+              if (value >= 2.0 && value < 9.99) return "purple";
+              if (value >= 10.0 && value <= 300) return "pink";
               return "grey"; // default color
             })
           }
