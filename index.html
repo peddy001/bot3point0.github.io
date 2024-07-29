@@ -1,108 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cloud Analysis</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    .hidden {
-      display: none;
-    }
-    .result {
-      margin-top: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Market Analysis</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js" defer></script>
 </head>
 <body>
-  <h1>Cloud Analysis</h1>
-  <form id="analysisForm">
-    <label for="numberOfClouds">Number of Clouds:</label>
-    <input type="number" id="numberOfClouds" required>
-    <button type="button" id="generateFields">Generate Fields</button>
-    <div id="cloudFields"></div>
-    <button type="submit" id="analyzeClouds" class="hidden">Analyze Clouds</button>
-  </form>
+    <nav>
+        <ul>
+            <li><a href="#" id="loginLink">Login</a></li>
+            <li><a href="#" id="cloudAnalysisLink">Cloud Analysis</a></li>
+            <li><a href="#" id="historyGraphsLink">History & Graphs</a></li>
+        </ul>
+        <button id="clearHistoryButton">Clear History</button>
+    </nav>
 
-  <div id="result" class="result"></div>
+    <!-- Login Page -->
+    <div id="loginPage" class="page-container">
+        <h1>Login</h1>
+        <form id="loginForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const analysisForm = document.getElementById("analysisForm");
-      const generateFieldsButton = document.getElementById("generateFields");
-      const cloudFieldsContainer = document.getElementById("cloudFields");
-      const analyzeCloudsButton = document.getElementById("analyzeClouds");
-      const resultContainer = document.getElementById("result");
+    <!-- Cloud Analysis Page -->
+    <div id="cloudAnalysisPage" class="page-container hidden">
+        <h1>Cloud Analysis</h1>
+        <form id="analysisForm">
+            <label for="numberOfClouds">Number of Clouds:</label>
+            <input type="number" id="numberOfClouds" name="numberOfClouds" min="1" required>
+            <button type="button" id="generateFields">Generate Fields</button>
+            <div id="cloudFields"></div>
+            <label for="analysisType">Select Analysis Type:</label>
+            <select id="analysisType">
+                <option value="basic">Basic Analysis</option>
+                <option value="advanced">Advanced Analysis</option>
+            </select>
+            <button type="submit" id="analyzeClouds" class="hidden">Analyze</button>
+        </form>
+        <div id="cloudResult"></div>
+        <div class="chart-container">
+            <canvas id="cloudBarGraph"></canvas>
+        </div>
+        <button type="button" id="resetButton" class="hidden">Reset</button>
+    </div>
 
-      // Generate input fields based on the number of clouds
-      generateFieldsButton.addEventListener("click", function () {
-        const numberOfClouds = document.getElementById("numberOfClouds").value;
-        cloudFieldsContainer.innerHTML = ""; // Clear existing fields
-        for (let i = 0; i < numberOfClouds; i++) {
-          const input = document.createElement("input");
-          input.type = "number";
-          input.placeholder = `Cloud ${i + 1} value`;
-          input.className = "cloudValue";
-          cloudFieldsContainer.appendChild(input);
-        }
-        analyzeCloudsButton.classList.remove("hidden"); // Show the analyze button
-      });
-
-      // Perform cloud analysis on form submission
-      analysisForm.addEventListener("submit", function (event) {
-        event.preventDefault(); // Prevent form submission
-        const cloudValues = Array.from(document.getElementsByClassName("cloudValue"))
-                                 .map((input) => parseFloat(input.value));
-        const analysisType = "Simple"; // Example analysis type
-        const { message } = performAnalysis(cloudValues, analysisType);
-        resultContainer.innerText = message; // Display the result
-      });
-
-      // Function to perform the cloud analysis
-      function performAnalysis(cloudValues, analysisType) {
-        // Validate input values
-        if (!Array.isArray(cloudValues) || cloudValues.length === 0) {
-          return {
-            message: "No valid cloud values provided.",
-            condition: "Unknown"
-          };
-        }
-
-        // Ensure all values are valid numbers
-        const validCloudValues = cloudValues.filter((value) => !isNaN(value) && value !== null && value !== undefined);
-        if (validCloudValues.length !== cloudValues.length) {
-          console.warn("Some invalid cloud values were filtered out.");
-        }
-
-        // Log the valid cloud values for debugging
-        console.log("Performing Analysis with cloud values:", validCloudValues);
-
-        // Count how many values are less than 1.4
-        const countBelowThreshold = validCloudValues.filter((value) => value < 1.4).length;
-
-        // Determine the weather condition based on whether most values are below 1.4
-        let weatherCondition;
-        if (countBelowThreshold > validCloudValues.length / 2) {
-          // More than half of the values are below 1.4
-          weatherCondition = "Weather is Bad 🌧️";
-        } else {
-          // Less than or equal to half of the values are below 1.4
-          weatherCondition = "Weather is Fine ☀️";
-        }
-
-        // Construct the result message
-        const message = `Performed ${analysisType} analysis on ${validCloudValues.length} cloud values. ${weatherCondition}`;
-
-        // Return the analysis result and weather condition
-        return {
-          message,
-          condition: weatherCondition
-        };
-      }
-    });
-  </script>
+    <!-- History & Graphs Page -->
+    <div id="historyGraphsPage" class="page-container hidden">
+        <h1>History & Graphs</h1>
+        <div id="graphsHistory"></div>
+    </div>
 </body>
 </html>
