@@ -154,7 +154,12 @@ function performAnalysis(cloudValues, analysisType) {
   // Categorize cloud values
   const blueClouds = validCloudValues.filter((value) => value >= 1.00 && value <= 1.99).length;
   const purpleClouds = validCloudValues.filter((value) => value >= 2.00 && value <= 9.99).length;
-  const pinkClouds = validCloudValues.filter((value) => value >= 10.00 && value <= 1000.00).length;
+  const pinkClouds = validCloudValues.filter((value) => value >= 10.00 && value <= 100.00).length;
+
+  // Debugging logs
+  console.log("Blue clouds count:", blueClouds);
+  console.log("Purple clouds count:", purpleClouds);
+  console.log("Pink clouds count:", pinkClouds);
 
   // Determine the weather condition
   let weatherCondition;
@@ -173,7 +178,6 @@ function performAnalysis(cloudValues, analysisType) {
     condition: weatherCondition
   };
 }
-
   function generateBarGraph(canvas, values) {
     if (canvas.chart) {
       canvas.chart.destroy();
