@@ -155,16 +155,20 @@ function performAnalysis(cloudValues, analysisType) {
   const blueClouds = validCloudValues.filter((value) => value >= 1.00 && value <= 1.99).length;
   const purpleClouds = validCloudValues.filter((value) => value >= 2.00 && value <= 9.99).length;
   const pinkClouds = validCloudValues.filter((value) => value >= 10.00 && value <= 100.00).length;
+  const totalClouds = validCloudValues.length;
 
   // Debugging logs
   console.log("Blue clouds count:", blueClouds);
   console.log("Purple clouds count:", purpleClouds);
   console.log("Pink clouds count:", pinkClouds);
+  console.log("Total valid clouds count:", totalClouds);
 
   // Determine the weather condition
   let weatherCondition;
-  if (blueClouds > (purpleClouds + pinkClouds)) {
+  if (blueClouds > totalClouds / 2) {
     weatherCondition = "🌧️❌Weather is Bad 🌧️❌";
+  } else if ((purpleClouds + pinkClouds) > totalClouds / 2) {
+    weatherCondition = "☀️✔️Weather is Fine ☀️✔️";
   } else {
     weatherCondition = "☀️✔️Weather is Fine ☀️✔️";
   }
@@ -178,6 +182,13 @@ function performAnalysis(cloudValues, analysisType) {
     condition: weatherCondition
   };
 }
+
+// Example usage
+const cloudValues = [1.5, 1.8, 1.6, 2.5, 3.0]; // Mostly blue clouds
+const analysisType = "Simple";
+const result = performAnalysis(cloudValues, analysisType);
+console.log(result.message); // Should print: "Performed Simple analysis on 5 cloud values. 🌧️❌Weather is Bad 🌧️❌"
+console.log(result.condition); // Should print: "🌧️❌Weather is Bad 🌧️❌"
   function generateBarGraph(canvas, values) {
     if (canvas.chart) {
       canvas.chart.destroy();
