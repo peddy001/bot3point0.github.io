@@ -133,90 +133,55 @@ document.addEventListener("DOMContentLoaded", function () {
     resetButton.classList.add("hidden");
   }
 
-function performAnalysis(cloudValues, analysisType) {
-  // Validate input values
-  if (!Array.isArray(cloudValues) || cloudValues.length === 0) {
+  function performAnalysis(cloudValues, analysisType) {
+    // Validate input values
+    if (!Array.isArray(cloudValues) || cloudValues.length === 0) {
+      return {
+        message: "No valid cloud values provided.",
+        condition: "Unknown"
+      };
+    }
+
+    // Ensure all values are valid numbers
+    const validCloudValues = cloudValues.filter((value) => !isNaN(value) && value !== null && value !== undefined);
+    if (validCloudValues.length !== cloudValues.length) {
+      console.warn("Some invalid cloud values were filtered out.");
+    }
+
+    // Log the valid cloud values for debugging
+    console.log("Performing Analysis with cloud values:", validCloudValues);
+
+    // Categorize cloud values
+    const blueClouds = validCloudValues.filter((value) => value >= 1.00 && value <= 1.99).length;
+    const purpleClouds = validCloudValues.filter((value) => value >= 2.00 && value <= 9.99).length;
+    const pinkClouds = validCloudValues.filter((value) => value >= 10.00 && value <= 100.00).length;
+    const totalClouds = validCloudValues.length;
+
+    // Debugging logs
+    console.log("Blue clouds count:", blueClouds);
+    console.log("Purple clouds count:", purpleClouds);
+    console.log("Pink clouds count:", pinkClouds);
+    console.log("Total valid clouds count:", totalClouds);
+
+    // Determine the weather condition
+    let weatherCondition;
+    if (blueClouds > (totalClouds / 2)) {
+      weatherCondition = "🌧️❌Weather is Bad 🌧️❌";
+    } else if ((purpleClouds + pinkClouds) > (totalClouds / 2)) {
+      weatherCondition = "☀️✔️Weather is Fine ☀️✔️";
+    } else {
+      weatherCondition = "☀️✔️Weather is Fine ☀️✔️";
+    }
+
+    // Construct the result message
+    const message = `Performed ${analysisType} analysis on ${validCloudValues.length} cloud values. ${weatherCondition}`;
+
+    // Return the analysis result and weather condition
     return {
-      message: "No valid cloud values provided.",
-      condition: "Unknown"
+      message,
+      condition: weatherCondition
     };
   }
-
-  // Ensure all values are valid numbers
-  const validCloudValues = cloudValues.filter((value) => !isNaN(value) && value !== null && value !== undefined);
-  if (validCloudValues.length !== cloudValues.length) {
-    console.warn("Some invalid cloud values were filtered out.");
-  }
-
-  // Log the valid cloud values for debugging
-  console.log("Performing Analysis with cloud values:", validCloudValues);
-
-  // Categorize cloud values
-  const blueClouds = validCloudValues.filter((value) => value >= 1.00 && value <= 1.99).length;
-  const purpleClouds = validCloudValues.filter((value) => value >= 2.00 && value <= 9.99).length;
-  const pinkClouds = validCloudValues.filter((value) => value >= 10.00 && value <= 100.00).length;
-  const totalClouds = validCloudValues.length;
-
-  // Debugging logs
-  console.log("Blue clouds count:", blueClouds);
-  console.log("Purple clouds count:", purpleClouds);
-  console.log("Pink clouds count:", pinkClouds);
-  console.log("Total valid clouds count:", totalClouds);function performAnalysis(cloudValues, analysisType) {
-  // Validate input values
-  if (!Array.isArray(cloudValues) || cloudValues.length === 0) {
-    return {
-      message: "No valid cloud values provided.",
-      condition: "Unknown"
-    };
-  }
-
-  // Ensure all values are valid numbers
-  const validCloudValues = cloudValues.filter((value) => !isNaN(value) && value !== null && value !== undefined);
-  if (validCloudValues.length !== cloudValues.length) {
-    console.warn("Some invalid cloud values were filtered out.");
-  }
-
-  // Log the valid cloud values for debugging
-  console.log("Performing Analysis with cloud values:", validCloudValues);
-
-  // Categorize cloud values
-  const blueClouds = validCloudValues.filter((value) => value >= 1.00 && value <= 1.99).length;
-  const purpleClouds = validCloudValues.filter((value) => value >= 2.00 && value <= 9.99).length;
-  const pinkClouds = validCloudValues.filter((value) => value >= 10.00 && value <= 100.00).length;
-  const totalClouds = validCloudValues.length;
-
-  // Debugging logs
-  console.log("Blue clouds count:", blueClouds);
-  console.log("Purple clouds count:", purpleClouds);
-  console.log("Pink clouds count:", pinkClouds);
-  console.log("Total valid clouds count:", totalClouds);
-
-  // Determine the weather condition
-  let weatherCondition;
-  if (blueClouds > (totalClouds / 2)) {
-    weatherCondition = "🌧️❌Weather is Bad 🌧️❌";
-  } else if ((purpleClouds + pinkClouds) > (totalClouds / 2)) {
-    weatherCondition = "☀️✔️Weather is Fine ☀️✔️";
-  } else {
-    weatherCondition = "☀️✔️Weather is Fine ☀️✔️";
-  }
-
-  // Construct the result message
-  const message = `Performed ${analysisType} analysis on ${validCloudValues.length} cloud values. ${weatherCondition}`;
-
-  // Return the analysis result and weather condition
-  return {
-    message,
-    condition: weatherCondition
-  };
-}
-
-// Example usage
-const cloudValues = [1.5, 1.8, 1.6, 2.5, 3.0]; // Mostly blue clouds
-const analysisType = "Simple";
-const result = performAnalysis(cloudValues, analysisType);
-console.log(result.message); // Should print: "Performed Simple analysis on 5 cloud values. 🌧️❌Weather is Bad 🌧️❌"
-console.log(result.condition); // Should print: "🌧️❌Weather is Bad 🌧️❌"
 
   function generateBarGraph(canvas, values) {
     if (canvas.chart) {
@@ -234,7 +199,7 @@ console.log(result.condition); // Should print: "🌧️❌Weather is Bad 🌧�
             backgroundColor: values.map((value) => {
               if (value >= 1.0 && value < 1.99) return "blue";
               if (value >= 2.0 && value < 9.99) return "purple";
-              if (value >= 10.0 && value <= 300) return "pink";
+              if (value >= 10.0 && value <= 100.0) return "pink";
               return "grey"; // default color
             })
           }
@@ -284,37 +249,10 @@ console.log(result.condition); // Should print: "🌧️❌Weather is Bad 🌧�
       graphContainer.appendChild(title);
 
       const canvas = document.createElement("canvas");
-      canvas.className = "history-graph-canvas";
       graphContainer.appendChild(canvas);
-
       graphsHistoryContainer.appendChild(graphContainer);
 
-      // Render the graph
-      new Chart(canvas, {
-        type: "bar",
-        data: {
-          labels: graph.values.map((_, index) => `Cloud ${index + 1}`),
-          datasets: [
-            {
-              label: "Cloud Values",
-              data: graph.values,
-              backgroundColor: graph.values.map((value) => {
-                   if (value >= 1.0 && value < 1.99) return "blue";
-                   if (value >= 2.0 && value < 9.99) return "purple";
-                   if (value >= 10.0 && value <= 300) return "pink";
-              return "grey"; // default color
-              })
-            }
-          ]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
+      generateBarGraph(canvas, graph.values);
     });
   }
 });
