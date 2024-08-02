@@ -151,16 +151,16 @@ function performAnalysis(cloudValues, analysisType) {
   // Log the valid cloud values for debugging
   console.log("Performing Analysis with cloud values:", validCloudValues);
 
-  // Count how many values are less than 1.4
-  const countBelowThreshold = validCloudValues.filter((value) => value < 1.4).length;
+  // Categorize cloud values
+  const blueClouds = validCloudValues.filter((value) => value >= 1.00 && value <= 1.99).length;
+  const purpleClouds = validCloudValues.filter((value) => value >= 2.00 && value <= 9.99).length;
+  const pinkClouds = validCloudValues.filter((value) => value >= 10.00 && value <= 1000.00).length;
 
-  // Determine the weather condition based on whether most values are below 1.4
+  // Determine the weather condition
   let weatherCondition;
-  if (countBelowThreshold > validCloudValues.length / 2) {
-    // More than half of the values are below 1.4
+  if (blueClouds > (purpleClouds + pinkClouds)) {
     weatherCondition = "🌧️❌Weather is Bad 🌧️❌";
   } else {
-    // Less than or equal to half of the values are below 1.4
     weatherCondition = "☀️✔️Weather is Fine ☀️✔️";
   }
 
@@ -173,6 +173,7 @@ function performAnalysis(cloudValues, analysisType) {
     condition: weatherCondition
   };
 }
+
   function generateBarGraph(canvas, values) {
     if (canvas.chart) {
       canvas.chart.destroy();
