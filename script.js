@@ -1,258 +1,123 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const loginLink = document.getElementById("loginLink");
-  const cloudAnalysisLink = document.getElementById("cloudAnalysisLink");
-  const historyGraphsLink = document.getElementById("historyGraphsLink");
-  const clearHistoryButton = document.getElementById("clearHistoryButton");
+const USERNAME = "admin";
+const PASSWORD = "1234";
+const history = [];
+let chart = null;
+let multipliers = [];
 
-  const loginPage = document.getElementById("loginPage");
-  const cloudAnalysisPage = document.getElementById("cloudAnalysisPage");
-  const historyGraphsPage = document.getElementById("historyGraphsPage");
+function login() {
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+  const error = document.getElementById("login-error");
 
-  const graphsHistoryContainer = document.getElementById("graphsHistory");
+  if (user === USERNAME && pass === PASSWORD) {
+    document.getElementById("login-section").style.display = "none";
+    document.getElementById("predictor-section").style.display = "block";
+    error.textContent = "";
+  } else {
+    error.textContent = "Invalid credentials.";
+  }
+}
 
-  if (!graphsHistoryContainer) {
-    console.error('Element with ID "graphsHistory" not found.');
-    return; // Exit if the element is not found
+function collectMultipliers() {
+  multipliers = [];
+  let count = prompt("How many multipliers do you want to enter? (5–10)");
+  count = parseInt(count);
+
+  if (isNaN(count) || count < 5 || count > 10) {
+    alert("Please enter a number between 5 and 10.");
+    return;
   }
 
-  let isAuthenticated = false;
-
-  loginLink.addEventListener("click", () => showPage(loginPage));
-  cloudAnalysisLink.addEventListener("click", () => {
-    if (isAuthenticated) {
-      showPage(cloudAnalysisPage);
+  for (let i = 1; i <= count; i++) {
+    let value = parseFloat(prompt(`Enter multiplier #${i}:`));
+    if (isNaN(value)) {
+      alert("Invalid number. Try again.");
+      i--;
     } else {
-      alert("Please login first.");
-      showPage(loginPage);
+      multipliers.push(value);
     }
-  });
-  historyGraphsLink.addEventListener("click", () => {
-    if (isAuthenticated) {
-      showPage(historyGraphsPage);
-      displayGraphsHistory();
-    } else {
-      alert("Please login first.");
-      showPage(loginPage);
-    }
-  });
-
-  clearHistoryButton.addEventListener("click", () => {
-    localStorage.removeItem("graphsHistory");
-    displayGraphsHistory();
-  });
-
-  const loginForm = document.getElementById("loginForm");
-  loginForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    // Simple authentication check
-    if (username === "GHOST" && password === "Discipline") {
-      isAuthenticated = true;
-      resetCloudAnalysisPage();
-      showPage(cloudAnalysisPage);
-    } else {
-      alert("Invalid credentials.");
-    }
-  });
-
-  const analysisForm = document.getElementById("analysisForm");
-  const generateFieldsButton = document.getElementById("generateFields");
-  const cloudFieldsContainer = document.getElementById("cloudFields");
-  const analyzeCloudsButton = document.getElementById("analyzeClouds");
-  const resetButton = document.getElementById("resetButton");
-  const cloudResult = document.getElementById("cloudResult");
-  const cloudBarGraphCanvas = document.getElementById("cloudBarGraph");
-
-  generateFieldsButton.addEventListener("click", function () {
-    const numberOfClouds = document.getElementById("numberOfClouds").value;
-    cloudFieldsContainer.innerHTML = "";
-    for (let i = 0; i < numberOfClouds; i++) {
-      const input = document.createElement("input");
-      input.type = "number";
-      input.placeholder = `Cloud ${i + 1} value`;
-      input.className = "cloudValue";
-      input.required = true;
-      input.min = "0";
-      input.step = "0.01";
-      cloudFieldsContainer.appendChild(input);
-    }
-    analyzeCloudsButton.classList.remove("hidden");
-  });
-
-  analyzeCloudsButton.addEventListener("click", function (event) {
-    event.preventDefault();
-    const cloudValues = Array.from(
-      document.getElementsByClassName("cloudValue")
-    ).map((input) => parseFloat(input.value));
-    const analysisType = document.getElementById("analysisType").value;
-    const dateTime = new Date().toLocaleString();
-
-    // Perform analysis and get result
-    const { message, condition } = performAnalysis(cloudValues, analysisType);
-    cloudResult.innerText = message;
-
-    // Generate and display bar graph
-    generateBarGraph(cloudBarGraphCanvas, cloudValues);
-
-    // Store graph data in localStorage
-    storeGraphData(cloudValues, dateTime, condition);
-
-    // Show reset button and hide analyze button
-    resetButton.classList.remove("hidden");
-    analyzeCloudsButton.classList.add("hidden");
-  });
-
-  resetButton.addEventListener("click", function () {
-    resetCloudAnalysisPage();
-  });
-
-  function showPage(page) {
-    loginPage.classList.add("hidden");
-    cloudAnalysisPage.classList.add("hidden");
-    historyGraphsPage.classList.add("hidden");
-    page.classList.remove("hidden");
   }
 
-  function resetCloudAnalysisPage() {
-    cloudFieldsContainer.innerHTML = "";
-    cloudResult.innerHTML = "";
+  document.getElementById("entered-values").textContent =
+    "Entered multipliers: " + multipliers.join(", ");
+}
 
-    // Clear the bar graph
-    const ctx = cloudBarGraphCanvas.getContext("2d");
-    ctx.clearRect(0, 0, cloudBarGraphCanvas.width, cloudBarGraphCanvas.height);
+function predict() {
+  const predictionText = document.getElementById("prediction");
 
-    // Remove the chart instance if it exists
-    if (cloudBarGraphCanvas.chart) {
-      cloudBarGraphCanvas.chart.destroy();
-      delete cloudBarGraphCanvas.chart;
-    }
-
-    // Show the analyze button
-    analyzeCloudsButton.classList.remove("hidden");
-    resetButton.classList.add("hidden");
+  if (multipliers.length < 5 || multipliers.length > 10) {
+    predictionText.textContent = "Please enter 5 to 10 valid multipliers.";
+    return;
   }
 
-  function performAnalysis(cloudValues, analysisType) {
-    // Validate input values
-    if (!Array.isArray(cloudValues) || cloudValues.length === 0) {
-      return {
-        message: "No valid cloud values provided.",
-        condition: "Unknown"
-      };
-    }
+  const avg = multipliers.reduce((a, b) => a + b, 0) / multipliers.length;
+  const aboveThreshold = multipliers.filter(m => m > 1.3).length;
+  const result = (avg > 1.5 && aboveThreshold >= Math.ceil(multipliers.length / 2))
+    ? "Safe"
+    : "Risky";
 
-    // Ensure all values are valid numbers
-    const validCloudValues = cloudValues.filter((value) => !isNaN(value) && value !== null && value !== undefined);
-    if (validCloudValues.length !== cloudValues.length) {
-      console.warn("Some invalid cloud values were filtered out.");
-    }
+  const time = new Date().toLocaleString();
+  history.unshift({ multipliers: [...multipliers], avg: avg.toFixed(2), result, time });
 
-    // Log the valid cloud values for debugging
-    console.log("Performing Analysis with cloud values:", validCloudValues);
+  predictionText.textContent = `Prediction: ${result} (Avg: ${avg.toFixed(2)})`;
 
-    // Categorize cloud values
-    const blueClouds = validCloudValues.filter((value) => value >= 1.00 && value <= 1.99).length;
-    const purpleClouds = validCloudValues.filter((value) => value >= 2.00 && value <= 9.99).length;
-    const pinkClouds = validCloudValues.filter((value) => value >= 10.00 && value <= 100.00).length;
-    const totalClouds = validCloudValues.length;
+  updateHistory();
+  renderChart(multipliers);
+}
 
-    // Debugging logs
-    console.log("Blue clouds count:", blueClouds);
-    console.log("Purple clouds count:", purpleClouds);
-    console.log("Pink clouds count:", pinkClouds);
-    console.log("Total valid clouds count:", totalClouds);
+function updateHistory() {
+  const list = document.getElementById("history");
+  list.innerHTML = "";
+  history.forEach(entry => {
+    const li = document.createElement("li");
+    li.textContent = `${entry.time} – Avg: ${entry.avg} → ${entry.result}`;
+    list.appendChild(li);
+  });
+}
 
-    // Determine the weather condition
-    let weatherCondition;
-    if (blueClouds > (totalClouds / 2)) {
-      weatherCondition = "🌧️❌Weather is Bad 🌧️❌";
-    } else if ((purpleClouds + pinkClouds) > (totalClouds / 2)) {
-      weatherCondition = "☀️✔️Weather is Fine ☀️✔️";
-    } else {
-      weatherCondition = "☀️✔️Weather is Fine ☀️✔️";
-    }
+function renderChart(data) {
+  const ctx = document.getElementById('lineChart').getContext('2d');
 
-    // Construct the result message
-    const message = `Performed ${analysisType} analysis on ${validCloudValues.length} cloud values. ${weatherCondition}`;
+  if (chart) chart.destroy();
 
-    // Return the analysis result and weather condition
-    return {
-      message,
-      condition: weatherCondition
-    };
-  }
-
-  function generateBarGraph(canvas, values) {
-    if (canvas.chart) {
-      canvas.chart.destroy();
-    }
-
-    const chart = new Chart(canvas, {
-      type: "bar",
-      data: {
-        labels: values.map((_, index) => `Cloud ${index + 1}`),
-        datasets: [
-          {
-            label: "Cloud Values",
-            data: values,
-            backgroundColor: values.map((value) => {
-              if (value >= 1.0 && value < 1.99) return "blue";
-              if (value >= 2.0 && value < 9.99) return "purple";
-              if (value >= 10.0 && value <= 100.0) return "pink";
-              return "grey"; // default color
-            })
-          }
-        ]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: data.map((_, i) => `#${i + 1}`),
+      datasets: [{
+        label: 'Multiplier History',
+        data: data,
+        borderColor: 'rgba(75,192,192,1)',
+        backgroundColor: 'rgba(75,192,192,0.2)',
+        borderWidth: 2,
+        tension: 0.3,
+        pointRadius: 5,
+        fill: true,
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Multiplier'
           }
         }
       }
-    });
-
-    canvas.chart = chart;
-  }
-
-  function storeGraphData(values, dateTime, condition) {
-    const graphsHistory =
-      JSON.parse(localStorage.getItem("graphsHistory")) || [];
-    graphsHistory.push({ values, dateTime, condition });
-    localStorage.setItem("graphsHistory", JSON.stringify(graphsHistory));
-  }
-
-  function displayGraphsHistory() {
-    graphsHistoryContainer.innerHTML = "";
-    const graphsHistory =
-      JSON.parse(localStorage.getItem("graphsHistory")) || [];
-
-    if (!Array.isArray(graphsHistory)) {
-      console.error("Invalid format in localStorage for graphsHistory.");
-      return;
     }
+  });
+}
 
-    graphsHistory.forEach((graph, index) => {
-      if (!graph.values || !Array.isArray(graph.values)) {
-        console.error(`Invalid data format for graph ${index + 1}.`);
-        return;
-      }
-
-      const graphContainer = document.createElement("div");
-      graphContainer.className = "graph-container history-graph";
-
-      const title = document.createElement("div");
-      title.className = "graph-title";
-      title.innerText = `Graph ${index + 1} - ${graph.dateTime} - ${graph.condition}`;
-      graphContainer.appendChild(title);
-
-      const canvas = document.createElement("canvas");
-      graphContainer.appendChild(canvas);
-      graphsHistoryContainer.appendChild(graphContainer);
-
-      generateBarGraph(canvas, graph.values);
-    });
-  }
-});
+function logout() {
+  document.getElementById("login-section").style.display = "block";
+  document.getElementById("predictor-section").style.display = "none";
+  document.getElementById("username").value = "";
+  document.getElementById("password").value = "";
+  document.getElementById("entered-values").textContent = "";
+  document.getElementById("prediction").textContent = "";
+  document.getElementById("history").innerHTML = "";
+  if (chart) chart.destroy();
+  history.length = 0;
+  multipliers = [];
+}
