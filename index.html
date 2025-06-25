@@ -1,38 +1,2121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Aviator Predictor</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviator Pro Predictor</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --danger: #e74c3c;
+            --danger-dark: #c0392b;
+            --success: #2ecc71;
+            --success-dark: #27ae60;
+            --warning: #f39c12;
+            --warning-dark: #e67e22;
+            --info: #9b59b6;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --gray: #95a5a6;
+            --white: #ffffff;
+            --black: #1a1a1a;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 1rem;
+        }
+
+        .login-card {
+            max-width: 400px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .login-card h1 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .app-header h1 {
+            color: var(--dark);
+            font-size: 1.8rem;
+        }
+
+        .app-header h1 span {
+            font-size: 0.9rem;
+            font-weight: normal;
+            color: var(--gray);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .balance-card,
+        .input-card,
+        .analysis-card,
+        .recommendation-card,
+        .chart-card,
+        .analytics-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        button {
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-weight: 500;
+        }
+
+        .primary-btn {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .primary-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .logout-btn {
+            background: none;
+            color: var(--danger);
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+
+        .balance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .balance-card h2 {
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+
+        .balance-amount {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .balance-amount span {
+            color: var(--dark);
+        }
+
+        .strategy-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .strategy-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.9rem;
+            color: var(--dark);
+            background-color: var(--light);
+            border: 1px solid #ddd;
+        }
+
+        .strategy-btn span {
+            font-weight: 600;
+        }
+
+        .strategy-btn.conservative {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .strategy-btn.moderate {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+            border-color: var(--warning);
+        }
+
+        .strategy-btn.aggressive {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .strategy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .strategy-btn.active {
+            box-shadow: 0 0 0 3px var(--primary), var(--shadow); /* Highlight active strategy */
+        }
+        .strategy-btn.moderate.active {
+            box-shadow: 0 0 0 3px var(--warning), var(--shadow);
+        }
+        .strategy-btn.aggressive.active {
+            box-shadow: 0 0 0 3px var(--danger), var(--shadow);
+        }
+
+
+        .input-card {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #multipliers-display {
+            background-color: var(--light);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            color: var(--dark);
+            text-align: left;
+        }
+
+        .fairness-warnings {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .fairness-warning {
+            color: var(--warning-dark);
+            padding: 0.5rem;
+            background-color: rgba(243, 156, 18, 0.1);
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .fairness-warning.danger {
+            color: var(--danger-dark);
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-container,
+        .pattern-container,
+        .simulation-container {
+            background-color: rgba(236, 240, 241, 0.5);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .stats-container h3,
+        .pattern-container h3,
+        .simulation-container h3 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .stat-item span:first-child {
+            color: var(--gray);
+        }
+
+        .prediction-result {
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .prediction-result.safe {
+            background-color: var(--success);
+            color: var(--white);
+        }
+
+        .prediction-result.risky {
+            background-color: var(--danger);
+            color: var(--white);
+        }
+
+        .behavioral-nudge {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--primary-dark);
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+        }
+
+        .recommendation-content {
+            background-color: rgba(236, 240, 241, 0.5);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+        }
+
+        .recommendation-content p {
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .strategy-recommendation {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .strategy-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            width: fit-content;
+        }
+
+        .strategy-pill.conservative {
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .strategy-pill.moderate {
+            color: var(--warning);
+            border: 2px solid var(--warning);
+        }
+
+        .strategy-pill.aggressive {
+            color: var(--danger);
+            border: 2px solid var(--danger);
+        }
+
+        .confidence-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        /* Minimized Chart Card */
+        .chart-card {
+            grid-column: span 1; /* Make it single column on desktop */
+            /* max-height: 300px; Reduced height */
+            padding: 1rem; /* Adjust padding if needed */
+            display: flex;
+            flex-direction: column;
+        }
+        .chart-card canvas {
+            max-height: 200px; /* Constrain canvas height */
+            width: 100%;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem; /* Reduced margin */
+        }
+
+        .analytics-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 1rem;
+        }
+
+        .analytics-tab {
+            padding: 0.5rem 1rem;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            color: var(--gray);
+            transition: var(--transition);
+        }
+
+        .analytics-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .analytics-tab:hover {
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: var(--border-radius);
+        }
+
+        .history-entry {
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .history-entry:last-child {
+            border-bottom: none;
+        }
+
+        .history-entry.safe-entry {
+            background-color: rgba(46, 204, 113, 0.05);
+        }
+
+        .history-entry.risky-entry {
+            background-color: rgba(231, 76, 60, 0.05);
+        }
+
+        .history-entry span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .performance-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .performance-stats .stat-box {
+            background-color: var(--light);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+
+        .performance-stats .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .performance-stats .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .target-progress {
+            height: 8px;
+            border-radius: 4px;
+            background: #eee;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--success));
+            transition: width 0.5s ease;
+        }
+
+        .target-display {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .target-display .base-target {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .target-display .stretch-target {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .phase-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .phase-badge.profit {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success-dark);
+        }
+
+        .phase-badge.recovery {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger-dark);
+        }
+
+        .phase-badge.neutral {
+            background-color: rgba(149, 165, 166, 0.1);
+            color: var(--gray);
+        }
+
+        .cooldown-banner {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--danger);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        .custom-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .risk-level-selector {
+            margin-bottom: 1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .modal-buttons button {
+            flex: 1;
+        }
+
+        .risk-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 0.5rem;
+        }
+
+        .risk-badge.low {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+
+        .risk-badge.medium {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .risk-badge.high {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        .score-0 { color: var(--danger); }
+        .score-1 { color: var(--danger); }
+        .score-2 { color: var(--warning); }
+        .score-3 { color: var(--warning); }
+        .score-4 { color: var(--success); }
+        .score-5 { color: var(--success); } /* Added for safety score */
+
+        .simulation-bar {
+            height: 15px;
+            background: #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+            position: relative;
+        }
+        .simulation-bar .simulation-label {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .simulation-bar::before {
+            content: '';
+            display: block;
+            height: 100%;
+            width: var(--progress-width, 0%);
+            background: linear-gradient(to right, var(--primary-dark), var(--primary));
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+
+        .alert {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            color: white;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .alert.info { background: var(--primary); }
+        .alert.success { background: var(--success); }
+        .alert.error { background: var(--danger); }
+        .alert.warning { background: var(--warning); }
+
+        .fade-out {
+            animation: fadeOut 0.5s ease-in forwards;
+        }
+
+        /* Backtest Results Table */
+        .backtest-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+        
+        .backtest-table th, 
+        .backtest-table td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .backtest-table th {
+            background-color: var(--light);
+            font-weight: 600;
+        }
+        
+        .backtest-table tr:nth-child(even) {
+            background-color: rgba(236, 240, 241, 0.3);
+        }
+        
+        .backtest-table .win {
+            color: var(--success);
+        }
+        
+        .backtest-table .loss {
+            color: var(--danger);
+        }
+
+        /* Fixed Stake Button */
+        .fixed-stake-btn {
+            background: none;
+            color: var(--info);
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--border-radius);
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .fixed-stake-btn:hover {
+            background-color: rgba(155, 89, 182, 0.1);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes slideIn {
+            from { bottom: -100px; opacity: 0; }
+            to { bottom: 2rem; opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-card {
+                grid-column: span 1;
+            }
+            
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .history-entry {
+                grid-template-columns: 1fr 1fr;
+            }
+            .modal-buttons {
+                flex-direction: column;
+            }
+            .backtest-table {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Aviator Predictor</h2>
-
-    <div id="login-section">
-      <input type="text" id="username" placeholder="Username">
-      <input type="password" id="password" placeholder="Password">
-      <button onclick="login()">Login</button>
-      <p id="login-error" class="error"></p>
+    <div id="login-container" class="container">
+        <div class="login-card">
+            <h1>Aviator Pro Predictor</h1>
+            <form id="login-form">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="primary-btn">Login</button>
+                <p id="login-error" class="error-message" style="color: var(--danger); margin-top: 1rem;"></p>
+            </form>
+        </div>
     </div>
 
-    <div id="predictor-section" style="display:none;">
-      <button onclick="collectMultipliers()">Start Input</button>
-      <p id="entered-values"></p>
-      <button onclick="predict()">Predict</button>
-      <p id="prediction"></p>
+    <div id="predictor-container" class="container hidden">
+        <header class="app-header">
+            <h1>Aviator Pro <span>v3.3</span></h1>
+            <button id="logout-btn" class="logout-btn">Logout</button>
+        </header>
 
-      <canvas id="lineChart"></canvas>
+        <main class="dashboard">
+            <section class="balance-card">
+                <div class="balance-header">
+                    <h2>Balance</h2>
+                    <div id="bankroll-phase" class="phase-badge neutral"></div>
+                </div>
+                <div class="balance-amount"><span id="current-balance">1000</span> Ksh</div>
+                
+                <div class="target-progress">
+                    <div id="target-progress-bar" class="progress-bar" style="width: 0%"></div>
+                </div>
+                <div class="target-display">
+                    <span class="base-target">Daily Target: 800Ksh</span>
+                    <span class="stretch-target">Stretch: 1600Ksh</span>
+                </div>
+                
+                <div class="strategy-buttons">
+                    <button class="strategy-btn" data-strategy="conservative" data-multiplier="1.2">Conservative <span>1.2x</span></button>
+                    <button class="strategy-btn active" data-strategy="moderate" data-multiplier="1.5">Moderate <span>1.5x</span></button>
+                    <button class="strategy-btn" data-strategy="aggressive" data-multiplier="2.0">Aggressive <span>2.0x</span></button>
+                </div>
+                <button id="set-stake-btn" class="fixed-stake-btn">Set Fixed Stake</button>
+                <span id="current-stake-display" style="font-size: 0.8rem; margin-top: 0.5rem; display: block;"></span>
+            </section>
 
-      <h3>Prediction History</h3>
-      <ul id="history"></ul>
+            <section class="input-card">
+                <h2 class="section-title">Multiplier Input</h2>
+                <button id="enter-multipliers-btn" class="primary-btn">Enter Multipliers</button>
+                <div id="multipliers-display"></div>
+                <div id="fairness-warnings" class="fairness-warnings"></div>
+            </section>
 
-      <button onclick="logout()" class="logout-btn">Logout</button>
+            <section class="analysis-card">
+                <h2 class="section-title">Advanced Analysis</h2>
+                <div class="analysis-grid">
+                    <div id="stats-display" class="stats-container"></div>
+                    <div id="pattern-analysis" class="pattern-container"></div>
+                    <div id="simulation-results" class="simulation-container"></div>
+                </div>
+                <div id="prediction-result" class="prediction-result"></div>
+                <div id="behavioral-nudge" class="behavioral-nudge"></div>
+            </section>
+
+            <section class="recommendation-card">
+                <h2 class="section-title">Smart Recommendation</h2>
+                <div id="recommendation-display" class="recommendation-content"></div>
+            </section>
+
+            <section class="chart-card">
+                <div class="chart-header">
+                    <h2 class="section-title">Multiplier Trends (Last 10)</h2>
+                </div>
+                <canvas id="multipliers-chart"></canvas>
+            </section>
+
+            <section class="analytics-card">
+                <div class="analytics-tabs">
+                    <button class="analytics-tab active" data-tab="history">History</button>
+                    <button class="analytics-tab" data-tab="performance">Performance</button>
+                    <button class="analytics-tab" data-tab="backtest">Backtest</button>
+                </div>
+                <div class="tab-content active" id="history-tab">
+                    <div id="history-list" class="history-list"></div>
+                </div>
+                <div class="tab-content" id="performance-tab">
+                    <div class="performance-stats">
+                        <div class="stat-box"><span class="stat-value" id="win-rate">0%</span><span class="stat-label">Win Rate</span></div>
+                        <div class="stat-box"><span class="stat-value" id="avg-multiplier">0x</span><span class="stat-label">Avg Multiplier</span></div>
+                        <div class="stat-box"><span class="stat-value" id="profit-loss">+0 Ksh</span><span class="stat-label">Today's Profit</span></div>
+                    </div>
+                </div>
+                <div class="tab-content" id="backtest-tab">
+                    <button id="run-backtest-btn" class="primary-btn" style="margin-bottom: 1rem;">Run Backtest</button>
+                    <div id="backtest-results"></div>
+                </div>
+            </section>
+        </main>
+
+        <div id="cooldown-banner" class="cooldown-banner hidden">
+            <span id="cooldown-text">Cooldown: 2:45 remaining</span>
+        </div>
     </div>
-  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="script.js"></script>
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const loginForm = document.getElementById('login-form');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const loginError = document.getElementById('login-error');
+            const predictorContainer = document.getElementById('predictor-container');
+            const loginContainer = document.getElementById('login-container');
+            const logoutBtn = document.getElementById('logout-btn'); // Corrected ID
+            const currentBalanceEl = document.getElementById('current-balance');
+            const bankrollPhase = document.getElementById('bankroll-phase');
+            const enterMultipliersBtn = document.getElementById('enter-multipliers-btn');
+            const multipliersDisplay = document.getElementById('multipliers-display');
+            const fairnessWarnings = document.getElementById('fairness-warnings');
+            const statsDisplay = document.getElementById('stats-display');
+            const patternAnalysis = document.getElementById('pattern-analysis');
+            const simulationResults = document.getElementById('simulation-results');
+            const predictionResult = document.getElementById('prediction-result');
+            const behavioralNudge = document.getElementById('behavioral-nudge');
+            const recommendationDisplay = document.getElementById('recommendation-display');
+            const cooldownBanner = document.getElementById('cooldown-banner');
+            const cooldownText = document.getElementById('cooldown-text');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const winRateEl = document.getElementById('win-rate');
+            const avgMultiplierEl = document.getElementById('avg-multiplier');
+            const profitLossEl = document.getElementById('profit-loss');
+            const historyList = document.getElementById('history-list');
+            const analyticsTabs = document.querySelectorAll('.analytics-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const targetProgressBar = document.getElementById('target-progress-bar');
+            const strategyButtons = document.querySelectorAll('.strategy-btn');
+            const setStakeBtn = document.getElementById('set-stake-btn');
+            const currentStakeDisplay = document.getElementById('current-stake-display');
+            const runBacktestBtn = document.getElementById('run-backtest-btn');
+            const backtestResults = document.getElementById('backtest-results');
+
+            // Game State with Daily Targets
+            let multipliers = [];
+            let balance = 1000;
+            let inputStartTime = 0;
+            let lossStreak = 0;
+            let winStreak = 0;
+            let lastBetTime = 0;
+            const COOLDOWN_MINUTES = 3;
+            let sessionHistory = []; // Stores objects with prediction outcomes and balance changes
+            let performanceData = { wins: 0, losses: 0, totalMultiplier: 0, totalProfit: 0 };
+            const INITIAL_BALANCE = 1000; // Reset daily
+            let maxDrawdown = 0; // Not actively used but kept for potential future
+            let maxWin = 0; // Not actively used but kept for potential future
+            let riskLevel = 'medium'; // Default risk level
+            let dailyProfit = 0;
+            const BASE_TARGET = 800;
+            const STRETCH_TARGET = 1600;
+            let currentStrategy = 'moderate'; // Default strategy
+            let confidence = 50; // Not actively used but kept for potential future
+            let fixedStake = null; // Fixed stake amount (null means dynamic)
+            let backtestData = []; // Stores backtest results
+
+            // Multiplier values for each strategy
+            const strategyMultipliers = {
+                conservative: 1.2,
+                moderate: 1.5,
+                aggressive: 2.0
+            };
+
+            let chart; // Declare chart variable for Chart.js instance
+
+            // --- Utility Functions ---
+
+            /**
+             * Displays a custom alert message.
+             * @param {string} message - The message to display.
+             * @param {'info'|'success'|'warning'|'error'} type - The type of alert.
+             */
+            function showAlert(message, type = 'info') {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert ${type}`;
+                alertDiv.textContent = message;
+                document.body.appendChild(alertDiv);
+
+                setTimeout(() => {
+                    alertDiv.classList.add('fade-out');
+                    alertDiv.addEventListener('animationend', () => {
+                        alertDiv.remove();
+                    }, { once: true });
+                }, 3000); // Alert disappears after 3 seconds
+            }
+
+            /** Shows the loading overlay. */
+            function showLoading() {
+                loadingOverlay.classList.remove('hidden');
+            }
+
+            /** Hides the loading overlay. */
+            function hideLoading() {
+                loadingOverlay.classList.add('hidden');
+            }
+
+            /**
+             * Checks if the cooldown period is active. If so, displays a banner.
+             * @returns {boolean} True if no cooldown, false otherwise.
+             */
+            function checkCooldown() {
+                const now = Date.now();
+                if (lastBetTime === 0) return true; // No cooldown if never bet
+
+                const timeElapsed = now - lastBetTime;
+                const cooldownDurationMs = COOLDOWN_MINUTES * 60 * 1000;
+
+                if (timeElapsed < cooldownDurationMs) {
+                    cooldownBanner.classList.remove('hidden');
+                    let remainingSeconds = Math.ceil((cooldownDurationMs - timeElapsed) / 1000);
+                    const updateCooldown = setInterval(() => {
+                        remainingSeconds--;
+                        if (remainingSeconds <= 0) {
+                            clearInterval(updateCooldown);
+                            cooldownBanner.classList.add('hidden');
+                            cooldownText.textContent = '';
+                        } else {
+                            const minutes = Math.floor(remainingSeconds / 60);
+                            const seconds = remainingSeconds % 60;
+                            cooldownText.textContent = `Cooldown: ${minutes}:${seconds.toString().padStart(2, '0')} remaining`;
+                        }
+                    }, 1000);
+                    showAlert(`Cooldown active! Please wait ${COOLDOWN_MINUTES} minutes before next prediction.`, 'warning');
+                    return false;
+                }
+                cooldownBanner.classList.add('hidden');
+                return true;
+            }
+
+            /** Resets the predictor state for logout. */
+            function resetPredictor() {
+                multipliers = [];
+                balance = 1000;
+                inputStartTime = 0;
+                lossStreak = 0;
+                winStreak = 0;
+                lastBetTime = 0;
+                sessionHistory = [];
+                performanceData = { wins: 0, losses: 0, totalMultiplier: 0, totalProfit: 0 };
+                dailyProfit = 0;
+                currentStrategy = 'moderate';
+                riskLevel = 'medium';
+                fixedStake = null;
+                backtestData = [];
+                
+                updateBankrollDisplay();
+                updatePerformanceStats();
+                multipliersDisplay.textContent = '';
+                fairnessWarnings.innerHTML = '';
+                statsDisplay.innerHTML = '';
+                patternAnalysis.innerHTML = '';
+                simulationResults.innerHTML = '';
+                predictionResult.textContent = '';
+                predictionResult.className = 'prediction-result';
+                recommendationDisplay.innerHTML = '';
+                historyList.innerHTML = '';
+                backtestResults.innerHTML = '';
+                currentStakeDisplay.textContent = '';
+                setupChart(); // Reset chart
+                cooldownBanner.classList.add('hidden');
+                loginError.textContent = '';
+            }
+
+            /** Updates the bankroll display and daily target progress. */
+            function updateBankrollDisplay() {
+                currentBalanceEl.textContent = balance.toFixed(2);
+                dailyProfit = balance - INITIAL_BALANCE;
+                const progress = Math.min(100, (dailyProfit / STRETCH_TARGET) * 100);
+                targetProgressBar.style.width = `${progress}%`;
+
+                if (dailyProfit >= STRETCH_TARGET) {
+                    bankrollPhase.textContent = 'Target Achieved!';
+                    bankrollPhase.className = 'phase-badge profit';
+                } else if (dailyProfit >= BASE_TARGET) {
+                    bankrollPhase.textContent = 'Profit Phase';
+                    bankrollPhase.className = 'phase-badge profit';
+                } else if (dailyProfit < 0) {
+                    bankrollPhase.textContent = 'Recovery Phase';
+                    bankrollPhase.className = 'phase-badge recovery';
+                } else {
+                    bankrollPhase.textContent = 'Neutral Phase';
+                    bankrollPhase.className = 'phase-badge neutral';
+                }
+            }
+
+            /**
+             * Calculates the average of an array of numbers.
+             * @param {number[]} arr - The array of numbers.
+             * @returns {number} The average.
+             */
+            function getAverage(arr) {
+                if (arr.length === 0) return 0;
+                return arr.reduce((sum, val) => sum + val, 0) / arr.length;
+            }
+
+            /**
+             * Calculates the median of an array of numbers.
+             * @param {number[]} arr - The array of numbers.
+             * @returns {number} The median.
+             */
+            function getMedian(arr) {
+                if (arr.length === 0) return 0;
+                const sorted = [...arr].sort((a, b) => a - b);
+                const mid = Math.floor(sorted.length / 2);
+                return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+            }
+
+            /**
+             * Calculates the standard deviation (volatility) of an array of numbers.
+             * @param {number[]} arr - The array of numbers.
+             * @returns {number} The standard deviation.
+             */
+            function getVolatility(arr) {
+                if (arr.length < 2) return 0;
+                const mean = getAverage(arr);
+                const sumOfSquares = arr.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0);
+                return Math.sqrt(sumOfSquares / arr.length);
+            }
+
+            /**
+             * Calculates the trend percentage based on the last 5 multipliers.
+             * @param {number[]} arr - The array of multipliers.
+             * @returns {number} The trend percentage.
+             */
+            function getTrend(arr) {
+                if (arr.length < 2) return 0;
+                const lastFive = arr.slice(-5);
+                if (lastFive.length < 2) return 0;
+                const first = lastFive[0];
+                const last = lastFive[lastFive.length - 1];
+                return ((last - first) / first) * 100;
+            }
+
+            /**
+             * Calculates a weighted average, giving more weight to recent multipliers.
+             * @param {number[]} multipliers - The array of multipliers.
+             * @returns {number} The weighted average.
+             */
+            function calculateWeightedAverage(multipliers) {
+                if (multipliers.length === 0) return 0;
+                // Weights decay for older values (e.g., 0.8^n)
+                const weights = multipliers.map((_, i) => Math.pow(0.8, multipliers.length - i - 1));
+                const weightedSum = multipliers.reduce((sum, val, i) => sum + val * weights[i], 0);
+                const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+                return totalWeight === 0 ? 0 : weightedSum / totalWeight;
+            }
+
+            /**
+             * Runs a Monte Carlo simulation to estimate the probability of a safe bet (multiplier > 1.5x).
+             * @param {number[]} multipliers - The array of multipliers.
+             * @returns {number} The estimated probability (0-1).
+             */
+            function runMonteCarlo(multipliers) {
+                if (multipliers.length < 2) return 0.5; // Default if not enough data
+                const simulations = 5000; // Increased simulations for better accuracy
+                let safeBets = 0;
+                const avg = getAverage(multipliers);
+                const vol = getVolatility(multipliers);
+                const historicalMin = Math.min(...multipliers);
+                const historicalMax = Math.max(...multipliers);
+
+                for (let i = 0; i < simulations; i++) {
+                    // Simple random walk simulation around the average, adjusted by volatility
+                    // Clamp simulated values to a reasonable range to avoid extreme outliers
+                    let simulatedNext = avg + (Math.random() * 2 - 1) * vol * 2; // Factor of 2 to spread more
+
+                    // Keep simulated next within historical min/max, or a broader reasonable range
+                    simulatedNext = Math.max(0.1, Math.min(historicalMax * 1.5 || 5.0, simulatedNext)); 
+
+                    if (simulatedNext >= currentStrategyMultiplier()) {
+                        safeBets++;
+                    }
+                }
+                return safeBets / simulations;
+            }
+
+            /**
+             * Calculates a time decay factor for prediction accuracy.
+             * The older the input, the less reliable the prediction.
+             * @param {number} startTime - Timestamp when multipliers were entered.
+             * @returns {number} Decay factor (0-1).
+             */
+            function calculateTimeDecayFactor(startTime) {
+                if (startTime === 0) return 1; // No decay if no start time
+                const elapsedMinutes = (Date.now() - startTime) / (60 * 1000);
+                // Exponential decay: e.g., 1 at 0 min, 0.5 at 5 min, 0.25 at 10 min
+                return Math.max(0.1, Math.exp(-0.15 * elapsedMinutes)); // Adjust 0.15 for faster/slower decay
+            }
+
+            /**
+             * Provides a warning if the input multipliers are old.
+             * @param {number} startTime - Timestamp when multipliers were entered.
+             * @returns {string} HTML string for the warning or empty string.
+             */
+            function getRecencyWarning(startTime) {
+                if (startTime === 0) return '';
+                const elapsedMinutes = (Date.now() - startTime) / (60 * 1000);
+                if (elapsedMinutes > 5) {
+                    return `<div class="stat-item" style="color: var(--danger); font-weight: 600;"><span>Data Age:</span><span>${Math.round(elapsedMinutes)} min old</span></div>`;
+                } else if (elapsedMinutes > 2) {
+                    return `<div class="stat-item" style="color: var(--warning); font-weight: 600;"><span>Data Age:</span><span>${Math.round(elapsedMinutes)} min old</span></div>`;
+                }
+                return '';
+            }
+
+            /**
+             * Determines the current bankroll phase based on balance relative to initial.
+             * @returns {'profit'|'recovery'|'neutral'} The bankroll phase.
+             */
+            function detectBankrollPhase() {
+                const profit = balance - INITIAL_BALANCE;
+                if (profit >= BASE_TARGET * 0.1) return 'profit'; // Small profit to be optimistic
+                if (profit < 0) return 'recovery';
+                return 'neutral';
+            }
+
+            /**
+             * Determines the multiplier associated with the current strategy.
+             * @returns {number} The multiplier for the current strategy.
+             */
+            function currentStrategyMultiplier() {
+                return strategyMultipliers[currentStrategy];
+            }
+
+            /**
+             * Calculates the stake amount based on fixed stake or dynamic calculation
+             * @param {number} balance - Current balance
+             * @param {string} strategy - Current strategy
+             * @returns {number} Stake amount
+             */
+            function calculateStake(balance, strategy) {
+                if (fixedStake !== null) {
+                    return Math.min(fixedStake, balance); // Never exceed balance
+                }
+                return calculateInitialStake(balance, riskLevel);
+            }
+
+            // --- Core Prediction Logic ---
+
+            /**
+             * Sets up and updates the Chart.js graph for multiplier trends.
+             */
+            function setupChart() {
+                const ctx = document.getElementById('multipliers-chart').getContext('2d');
+                if (chart) {
+                    chart.destroy(); // Destroy existing chart if it exists to avoid memory leaks
+                }
+
+                // Show only the last 10 entries for simplicity and focus on recent trends
+                const displayMultipliers = multipliers.slice(-10);
+                const labels = displayMultipliers.map((_, index) => `R${multipliers.length - displayMultipliers.length + index + 1}`);
+
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Recent Multipliers',
+                            data: displayMultipliers,
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            borderWidth: 2,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#3498db',
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Round Number'
+                                }
+                            },
+                            y: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Multiplier'
+                                },
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => `Multiplier: ${ctx.parsed.y?.toFixed(2) || '0.00'}x`
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            /**
+             * Updates the chart with new multiplier data.
+             * @param {number[]} newMultipliers - The array of multipliers to display.
+             */
+            function updateChart(newMultipliers) {
+                multipliers = newMultipliers; // Update the global multipliers array
+                setupChart(); // Re-render the simplified chart
+            }
+
+            /**
+             * Detects various patterns within the multipliers for analysis.
+             * @param {number[]} multipliers - The array of multipliers.
+             * @returns {{isStreak: boolean, isVolatile: boolean, patternTags: {class: string, text: string}[]}} Detected patterns.
+             */
+            function detectPatterns(multipliers) {
+                const lastFew = multipliers.slice(-5); // Focus on very recent patterns
+                let consecutiveLow = 0; // Below 1.2x
+                let consecutiveHigh = 0; // Above 2.0x
+                let volatilityCount = 0; // Large swings
+                const tags = [];
+
+                if (lastFew.length < 2) {
+                    return { isStreak: false, isVolatile: false, patternTags: [] };
+                }
+
+                for (let i = 0; i < lastFew.length; i++) {
+                    if (lastFew[i] < 1.2) {
+                        consecutiveLow++;
+                        consecutiveHigh = 0;
+                    } else if (lastFew[i] > 2.0) {
+                        consecutiveHigh++;
+                        consecutiveLow = 0;
+                    } else {
+                        consecutiveLow = 0;
+                        consecutiveHigh = 0;
+                    }
+
+                    if (i > 0 && Math.abs(lastFew[i] - lastFew[i-1]) > 1.0) { // Significant jump/drop
+                        volatilityCount++;
+                    }
+                }
+                
+                let isStreak = false;
+                if (consecutiveLow >= 3) {
+                    tags.push({ class: 'down-trend', text: 'Low Streak' });
+                    isStreak = true;
+                }
+                if (consecutiveHigh >= 3) {
+                    tags.push({ class: 'up-trend', text: 'High Streak' });
+                    isStreak = true;
+                }
+
+                const isVolatile = volatilityCount >= Math.floor(lastFew.length / 2);
+                if (isVolatile) {
+                    tags.push({ class: 'volatile', text: 'Volatile' });
+                }
+
+                // Add more generic tags if no specific streaks
+                if (!isStreak && !isVolatile) {
+                    tags.push({ class: 'neutral', text: 'Stable Rounds' });
+                } else if (isStreak && isVolatile) {
+                     // Specific case for both streak and volatility
+                    tags.push({ class: 'mixed', text: 'Mixed Trend' });
+                }
+
+                return { isStreak, isVolatile, patternTags: tags };
+            }
+
+            /**
+             * Verifies for suspicious patterns that might indicate non-fairness (client-side only).
+             * @param {number[]} multipliers - The array of multipliers.
+             * @returns {{isSuspicious: boolean, warnings: string[]}} Suspicion status and warning messages.
+             */
+            function verifyFairnessPattern(multipliers) {
+                const warnings = [];
+                let isSuspicious = false;
+
+                // Warning 1: Too many consecutive low multipliers (e.g., > 80% below 1.2x in last 5-10)
+                const recentMultipliers = multipliers.slice(-10);
+                if (recentMultipliers.length >= 5) {
+                    const lowCount = recentMultipliers.filter(x => x < 1.2).length;
+                    if (lowCount >= recentMultipliers.length * 0.8 && recentMultipliers.length > 5) {
+                        warnings.push('⚠️ High frequency of low multipliers (<1.2x) in recent rounds.');
+                        isSuspicious = true;
+                    }
+                }
+
+                // Warning 2: Extreme volatility without a logical trend (e.g., 1.0x, 50x, 1.1x, 30x)
+                if (multipliers.length >= 4) {
+                    const swings = 0; // Not precisely implemented as it's complex, conceptual check
+                    // Simplified: check if both very low and very high values exist frequently
+                    const hasVeryLow = multipliers.filter(x => x < 1.1).length > multipliers.length * 0.3;
+                    const hasVeryHigh = multipliers.filter(x => x > 15).length > multipliers.length * 0.1;
+                    if (hasVeryLow && hasVeryHigh) {
+                        warnings.push('⚠️ Highly erratic multipliers (frequent extreme lows & highs).');
+                        isSuspicious = true;
+                    }
+                }
+
+                // Warning 3: Repeating sequences (basic check for first 3-5 multipliers repeating)
+                if (multipliers.length >= 6) {
+                    const segment1 = multipliers.slice(0, 3).join(',');
+                    const segment2 = multipliers.slice(3, 6).join(',');
+                    if (segment1 === segment2 && segment1.length > 0) {
+                        warnings.push('⚠️ Short repeating multiplier sequence detected.');
+                        isSuspicious = true;
+                    }
+                }
+                
+                if (warnings.length > 0) {
+                    showAlert('Fairness warnings detected! Review analysis carefully.', 'warning');
+                }
+
+                return { isSuspicious, warnings };
+            }
+
+            /**
+             * Makes a prediction based on various factors and updates the UI.
+             * @returns {object} An object containing prediction results.
+             */
+            function makePrediction() {
+                if (multipliers.length === 0) {
+                    showAlert('Please enter multipliers first!', 'error');
+                    return;
+                }
+
+                const timeDecay = calculateTimeDecayFactor(inputStartTime);
+                const recencyWarningHtml = getRecencyWarning(inputStartTime);
+
+                // Statistical calculations
+                const average = getAverage(multipliers);
+                const median = getMedian(multipliers);
+                const volatility = getVolatility(multipliers);
+                const trend = getTrend(multipliers);
+                const above1_3 = multipliers.filter(x => x > 1.3).length;
+                const below1_0 = multipliers.filter(x => x < 1.0).length;
+                const weightedAvg = calculateWeightedAverage(multipliers);
+                const safeProbability = runMonteCarlo(multipliers);
+                const bankrollPhase = detectBankrollPhase();
+
+                // Pattern detection
+                const { isStreak, isVolatile, patternTags } = detectPatterns(multipliers);
+                const { isSuspicious, warnings: fairnessWarnMsgs } = verifyFairnessPattern(multipliers);
+
+                // --- Simplified Safety Score Calculation ---
+                let safetyScore = 5; // Neutral starting point (out of 10)
+
+                // Adjust based on recent data
+                if (weightedAvg > 1.8) safetyScore += 2;
+                else if (weightedAvg > 1.5) safetyScore += 1;
+                else if (weightedAvg < 1.2) safetyScore -= 2;
+                else if (weightedAvg < 1.4) safetyScore -= 1;
+
+                // Adjust based on volatility
+                if (volatility > 1.0) safetyScore -= 2; // High volatility reduces safety
+                else if (volatility > 0.6) safetyScore -= 1;
+                else if (volatility < 0.3) safetyScore += 1; // Low volatility increases safety
+
+                // Adjust based on trend
+                if (trend > 10) safetyScore += 1; // Strong upward trend
+                else if (trend < -10) safetyScore -= 1; // Strong downward trend
+
+                // Adjust based on patterns
+                if (isStreak && !isVolatile) safetyScore += 1; // Consistent streak
+                if (isVolatile && !isStreak) safetyScore -= 1; // Pure volatility without direction
+
+                // Adjust based on Monte Carlo probability
+                if (safeProbability > 0.7) safetyScore += 2;
+                else if (safeProbability > 0.55) safetyScore += 1;
+                else if (safeProbability < 0.3) safetyScore -= 2;
+                else if (safeProbability < 0.45) safetyScore -= 1;
+
+                // Adjust based on risk level selected by user
+                if (riskLevel === 'low') safetyScore = Math.min(10, safetyScore + 2); // More cautious
+                else if (riskLevel === 'high') safetyScore = Math.max(0, safetyScore - 2); // More risk-tolerant
+
+                // Adjust based on daily profit/target progress
+                if (dailyProfit >= BASE_TARGET) safetyScore = Math.min(10, safetyScore + 1); // Closer to target, be slightly more confident
+                else if (dailyProfit < -INITIAL_BALANCE * 0.2) safetyScore = Math.max(0, safetyScore - 1); // Significant drawdown, be more cautious
+
+                // Clamp safety score between 0 and 10
+                safetyScore = Math.max(0, Math.min(10, safetyScore));
+
+                // Determine if it's "safe" based on the refined score
+                // A higher threshold means it's "risky" more often, let's make it more balanced
+                const predictionThreshold = 6; // Score of 6 or higher is "Likely Favorable"
+                const isSafe = safetyScore >= predictionThreshold;
+
+                // --- UI Updates ---
+                statsDisplay.innerHTML = `
+                    <h3>Current Stats</h3>
+                    <div class="stat-item"><span>Weighted Avg:</span><span>${weightedAvg.toFixed(2)}x</span></div>
+                    <div class="stat-item"><span>Median:</span><span>${median.toFixed(2)}x</span></div>
+                    <div class="stat-item"><span>Volatility:</span><span>${volatility.toFixed(2)}</span></div>
+                    <div class="stat-item"><span>Trend (last 5):</span><span>${trend.toFixed(1)}%</span></div>
+                    <div class="stat-item"><span>Rounds > 1.3x:</span><span>${above1_3}</span></div>
+                    <div class="stat-item"><span>Rounds < 1.0x:</span><span>${below1_0}</span></div>
+                    <div class="stat-item"><span>Overall Safety:</span><span><span class="score-${Math.floor(safetyScore / 2)}">${safetyScore}/10</span></span></div>
+                    ${recencyWarningHtml}
+                `;
+
+                patternAnalysis.innerHTML = `
+                    <h3>Pattern Guide</h3>
+                    <p>${isStreak ? 'Recent streak detected. ' : 'No clear streak. '} ${isVolatile ? 'High volatility observed.' : 'Relatively stable rounds.'}</p>
+                    <div>${patternTags.map(tag => `<span class="risk-badge ${tag.class === 'volatile' ? 'high' : tag.class === 'up-trend' ? 'success' : 'medium'}">${tag.text}</span>`).join(' ')}</div>
+                `;
+
+                simulationResults.innerHTML = `
+                    <h3>Probability Guide</h3>
+                    <p>Likelihood of current strategy multiplier (${currentStrategyMultiplier().toFixed(2)}x) or higher: <b>${Math.round(safeProbability * 100)}%</b></p>
+                    <div class="simulation-bar" style="--progress-width: ${Math.round(safeProbability * 100)}%;">
+                        <span class="simulation-label">${Math.round(safeProbability * 100)}%</span>
+                    </div>
+                `;
+
+                predictionResult.textContent = isSafe ? 'Likely Favorable (Low Risk)' : 'Potentially Risky (High Risk)';
+                predictionResult.className = `prediction-result ${isSafe ? 'safe' : 'risky'}`;
+
+                behavioralNudge.innerHTML = `
+                    <p>Remember: Past performance is not indicative of future results. For real-money platforms, always verify their provably fair system.</p>
+                `;
+                fairnessWarnings.innerHTML = fairnessWarnMsgs.map(warning => `<div class="fairness-warning ${fairnessWarnMsgs.length >= 2 ? 'danger' : ''}">${warning}</div>`).join('');
+
+
+                // Update recommendation
+                updateRecommendation(isSafe, safetyScore, currentStrategyMultiplier(), safeProbability, dailyProfit);
+
+                // Record bet time for cooldown
+                lastBetTime = Date.now();
+                
+                const outcome = isSafe ? 'Win' : 'Loss'; // Simplified outcome for history tracking
+                trackSession(outcome, multipliers[multipliers.length - 1], safetyScore);
+                addToHistory({
+                    timestamp: new Date().toLocaleString(),
+                    multipliersEntered: multipliers.slice(-3).join(', '), // Show last few
+                    predictedOutcome: isSafe ? 'Favorable' : 'Risky',
+                    safetyScore: safetyScore,
+                    actualOutcomePlaceholder: '', // In a real app, this would be determined after the round
+                    balanceAfter: balance // Reflects balance if this were a real bet
+                });
+                updatePerformanceStats(); // Update after adding to history
+
+                return {
+                    average, median, volatility, trend,
+                    above1_3, below1_0, safetyScore,
+                    prediction: isSafe ? 'Safe' : 'Risky',
+                    timeDecay,
+                    safeProbability,
+                    bankrollPhase
+                };
+            }
+
+            // --- Recommendation and Staking Logic ---
+
+            /**
+             * Calculates an initial suggested stake based on balance and risk level.
+             * @param {number} currentBalance - The user's current balance.
+             * @param {string} riskLevel - The chosen risk level ('low', 'medium', 'high').
+             * @returns {number} Suggested initial stake.
+             */
+            function calculateInitialStake(currentBalance, riskLevel) {
+                let percentage;
+                switch (riskLevel) {
+                    case 'low': percentage = 0.01; break; // 1% of balance
+                    case 'medium': percentage = 0.025; break; // 2.5% of balance
+                    case 'high': percentage = 0.05; break; // 5% of balance
+                    default: percentage = 0.02; // Default to 2%
+                }
+                return Math.max(10, Math.round(currentBalance * percentage)); // Minimum stake of 10 Ksh
+            }
+
+            /**
+             * Calculates an optimal stake to reach the stretch target, considering safety.
+             * This is a heuristic and not guaranteed to win.
+             * @param {number} currentBalance - The current balance.
+             * @param {number} targetBalance - The target balance (e.g., STRETCH_TARGET).
+             * @param {number} safetyScore - The calculated safety score (0-10).
+             * @param {number} strategyMultiplier - The multiplier of the chosen strategy.
+             * @returns {number} The suggested optimal stake.
+             */
+            function calculateOptimalStake(currentBalance, targetBalance, safetyScore, strategyMultiplier) {
+                if (currentBalance >= targetBalance) return 0; // Target already met
+
+                const profitNeeded = targetBalance - currentBalance;
+                const netGainPerUnit = strategyMultiplier - 1; // e.g., 1.5x -> 0.5 gain
+
+                if (netGainPerUnit <= 0) return calculateInitialStake(currentBalance, riskLevel); // Avoid division by zero or negative
+
+                // Base stake to reach target in one "perfect" round (highly unlikely)
+                let idealStake = profitNeeded / netGainPerUnit;
+
+                // Adjust based on safety score:
+                // Higher safetyScore means we can be more aggressive towards the ideal stake.
+                // Lower safetyScore means we should be more conservative.
+                let adjustmentFactor;
+                if (safetyScore >= 8) adjustmentFactor = 1.0; // Very confident, aim for ideal
+                else if (safetyScore >= 6) adjustmentFactor = 0.7; // Good confidence
+                else if (safetyScore >= 4) adjustmentFactor = 0.4; // Moderate confidence
+                else adjustmentFactor = 0.2; // Low confidence, very conservative
+
+                let suggestedStake = idealStake * adjustmentFactor;
+
+                // Also, cap stake as a percentage of current balance to prevent large bets
+                const maxAllowedStake = currentBalance * 0.1; // Max 10% of balance per bet for safety
+                suggestedStake = Math.min(suggestedStake, maxAllowedStake);
+
+                // Ensure a reasonable minimum stake
+                return Math.max(10, Math.round(suggestedStake));
+            }
+
+
+            /**
+             * Updates the recommendation display based on prediction results and staking suggestions.
+             * @param {boolean} isSafe - True if the prediction is safe.
+             * @param {number} safetyScore - The numerical safety score.
+             * @param {number} strategyMult - The multiplier for the current strategy.
+             * @param {number} safeProb - Monte Carlo safe probability.
+             * @param {number} currentDailyProfit - The current daily profit.
+             */
+            function updateRecommendation(isSafe, safetyScore, strategyMult, safeProb, currentDailyProfit) {
+                let recommendationText = '';
+                let stakeSuggestion = 0;
+
+                const profitNeededForStretch = STRETCH_TARGET - balance;
+                const profitNeededForBase = BASE_TARGET - balance;
+
+                if (isSafe) {
+                    recommendationText += `<p>The current analysis suggests a <b>favorable betting opportunity</b>. The likelihood of reaching ${strategyMult.toFixed(2)}x or higher is <b>${Math.round(safeProb * 100)}%</b>.</p>`;
+                    stakeSuggestion = calculateOptimalStake(balance, STRETCH_TARGET, safetyScore, strategyMult);
+                } else {
+                    recommendationText += `<p>The current pattern is <b>risky</b>. It's advisable to <b>exercise caution</b> or skip this round. The probability of reaching ${strategyMult.toFixed(2)}x or higher is lower.</p>`;
+                    stakeSuggestion = calculateInitialStake(balance, 'low'); // Suggest a very low stake if risky
+                }
+                
+                // Add strategy suggestion based on safety score
+                let recommendedStrategy = currentStrategy;
+                if (safetyScore >= 8) {
+                    recommendedStrategy = 'aggressive';
+                } else if (safetyScore >= 6) {
+                    recommendedStrategy = 'moderate';
+                } else {
+                    recommendedStrategy = 'conservative';
+                }
+
+                recommendationText += `<p>Based on the current confidence and your risk profile, consider using a <b>${recommendedStrategy.charAt(0).toUpperCase() + recommendedStrategy.slice(1)} strategy</b>.</p>`;
+
+                // Add staking suggestion
+                if (profitNeededForStretch > 0 && isSafe) {
+                    recommendationText += `<p>To approach your daily stretch target of ${STRETCH_TARGET} Ksh, a suggested stake for the next favorable round is <b>${stakeSuggestion.toFixed(0)} Ksh</b> (aiming for ${strategyMult.toFixed(2)}x).</p>`;
+                } else if (profitNeededForBase > 0 && isSafe) {
+                     recommendationText += `<p>To progress towards your base daily target of ${BASE_TARGET} Ksh, a suggested stake for the next favorable round is <b>${stakeSuggestion.toFixed(0)} Ksh</b> (aiming for ${strategyMult.toFixed(2)}x).</p>`;
+                }
+                 else if (dailyProfit <= 0 && !isSafe) {
+                    recommendationText += `<p>Given the current risk, consider a minimal stake of <b>${stakeSuggestion.toFixed(0)} Ksh</b> or wait for a better opportunity.</p>`;
+                }
+                else if (dailyProfit > 0 && dailyProfit < BASE_TARGET && isSafe) {
+                    // Still in profit, not yet at base target, and safe
+                    recommendationText += `<p>To grow your profits, a recommended stake for this favorable round is <b>${stakeSuggestion.toFixed(0)} Ksh</b> (aiming for ${strategyMult.toFixed(2)}x).</p>`;
+                }
+                else if (dailyProfit >= STRETCH_TARGET) {
+                    recommendationText += `<p><b>Congratulations! You've reached your stretch target!</b> Consider taking a break or reducing your stake significantly to protect your profits.</p>`;
+                    stakeSuggestion = 0; // No stake recommended
+                }
+                
+                recommendationDisplay.innerHTML = recommendationText;
+            }
+
+            // --- History & Performance Tracking ---
+
+            /**
+             * Tracks session data for performance analytics.
+             * @param {'Win'|'Loss'} outcome - The perceived outcome based on prediction vs. assumed result.
+             * @param {number} lastMultiplier - The last multiplier entered.
+             * @param {number} safetyScore - The safety score for the prediction.
+             */
+            function trackSession(outcome, lastMultiplier, safetyScore) {
+                const stake = calculateStake(balance, currentStrategy);
+                
+                if (outcome === 'Win') {
+                    performanceData.wins++;
+                    winStreak++;
+                    lossStreak = 0;
+                    // Simulate a win: stake * multiplier
+                    balance += stake * (currentStrategyMultiplier() - 1); 
+                    showAlert(`Simulated Win! Balance: ${balance.toFixed(2)} Ksh`, 'success');
+                } else {
+                    performanceData.losses++;
+                    lossStreak++;
+                    winStreak = 0;
+                    // Simulate a loss: subtract the stake
+                    balance -= stake; 
+                    showAlert(`Simulated Loss! Balance: ${balance.toFixed(2)} Ksh`, 'error');
+                }
+                performanceData.totalMultiplier += lastMultiplier;
+                performanceData.totalProfit = balance - INITIAL_BALANCE; // Update total profit
+
+                updateBankrollDisplay();
+            }
+
+            /** Updates the performance statistics display. */
+            function updatePerformanceStats() {
+                const totalRounds = performanceData.wins + performanceData.losses;
+                const winRateCalc = totalRounds > 0 ? (performanceData.wins / totalRounds) * 100 : 0;
+                const avgMultCalc = totalRounds > 0 ? performanceData.totalMultiplier / totalRounds : 0;
+
+                winRateEl.textContent = `${winRateCalc.toFixed(1)}%`;
+                avgMultiplierEl.textContent = `${avgMultCalc.toFixed(2)}x`;
+                profitLossEl.textContent = `${performanceData.totalProfit >= 0 ? '+' : ''}${performanceData.totalProfit.toFixed(2)} Ksh`;
+                profitLossEl.style.color = performanceData.totalProfit >= 0 ? 'var(--success)' : 'var(--danger)';
+            }
+
+            /**
+             * Adds a prediction result to the session history display.
+             * @param {object} entry - The history entry to add.
+             */
+            function addToHistory(entry) {
+                sessionHistory.push(entry);
+                const historyEntryEl = document.createElement('div');
+                historyEntryEl.className = `history-entry ${entry.predictedOutcome === 'Favorable' ? 'safe-entry' : 'risky-entry'}`;
+                historyEntryEl.innerHTML = `
+                    <span>${entry.timestamp.split(',')[1].trim()}</span>
+                    <span>Multi: ${entry.multipliersEntered}</span>
+                    <span>Pred: ${entry.predictedOutcome}</span>
+                    <span>Bal: ${entry.balanceAfter.toFixed(2)}</span>
+                `;
+                historyList.prepend(historyEntryEl); // Add to top
+
+                // Keep history list from getting too long
+                if (historyList.children.length > 50) {
+                    historyList.removeChild(historyList.lastChild);
+                }
+            }
+
+            // --- Backtesting Feature ---
+
+            /**
+             * Runs a backtest simulation with historical multipliers
+             */
+            function runBacktest() {
+                if (multipliers.length < 5) {
+                    showAlert('Enter at least 5 multipliers first!', 'error');
+                    return;
+                }
+
+                showLoading();
+                
+                // Simulate backtest with a delay for UI responsiveness
+                setTimeout(() => {
+                    const testMultipliers = [...multipliers]; // Copy current multipliers
+                    const testStrategy = currentStrategy;
+                    const testRiskLevel = riskLevel;
+                    let testBalance = INITIAL_BALANCE;
+                    const results = [];
+                    let wins = 0;
+                    let losses = 0;
+                    let maxBalance = INITIAL_BALANCE;
+                    let minBalance = INITIAL_BALANCE;
+
+                    // Simulate each round
+                    for (let i = 0; i < testMultipliers.length; i++) {
+                        const currentMultiplier = testMultipliers[i];
+                        const stake = fixedStake !== null 
+                            ? Math.min(fixedStake, testBalance)
+                            : calculateInitialStake(testBalance, testRiskLevel);
+                        
+                        // Determine if this would have been a win based on strategy multiplier
+                        const isWin = currentMultiplier >= strategyMultipliers[testStrategy];
+                        
+                        // Update balance
+                        if (isWin) {
+                            testBalance += stake * (strategyMultipliers[testStrategy] - 1);
+                            wins++;
+                        } else {
+                            testBalance -= stake;
+                            losses++;
+                        }
+
+                        // Track max/min balance
+                        maxBalance = Math.max(maxBalance, testBalance);
+                        minBalance = Math.min(minBalance, testBalance);
+
+                        // Save result
+                        results.push({
+                            round: i + 1,
+                            multiplier: currentMultiplier.toFixed(2),
+                            stake: stake.toFixed(2),
+                            outcome: isWin ? 'Win' : 'Loss',
+                            balance: testBalance.toFixed(2),
+                            strategy: testStrategy
+                        });
+                    }
+
+                    backtestData = results;
+                    displayBacktestResults(results, wins, losses, maxBalance, minBalance);
+                    hideLoading();
+                }, 500);
+            }
+
+            /**
+             * Displays backtest results in the UI
+             */
+            function displayBacktestResults(results, wins, losses, maxBalance, minBalance) {
+                const winRate = (wins / (wins + losses)) * 100;
+                const profit = results[results.length - 1].balance - INITIAL_BALANCE;
+                
+                backtestResults.innerHTML = `
+                    <div style="margin-bottom: 1rem;">
+                        <h3>Backtest Summary</h3>
+                        <div class="stat-item"><span>Rounds Simulated:</span><span>${results.length}</span></div>
+                        <div class="stat-item"><span>Wins:</span><span>${wins} (${winRate.toFixed(1)}%)</span></div>
+                        <div class="stat-item"><span>Losses:</span><span>${losses}</span></div>
+                        <div class="stat-item"><span>Final Balance:</span><span>${results[results.length - 1].balance} Ksh</span></div>
+                        <div class="stat-item"><span>Profit/Loss:</span><span style="color: ${profit >= 0 ? 'var(--success)' : 'var(--danger)'}">${profit >= 0 ? '+' : ''}${profit.toFixed(2)} Ksh</span></div>
+                        <div class="stat-item"><span>Max Balance:</span><span>${maxBalance.toFixed(2)} Ksh</span></div>
+                        <div class="stat-item"><span>Min Balance:</span><span>${minBalance.toFixed(2)} Ksh</span></div>
+                    </div>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        <table class="backtest-table">
+                            <thead>
+                                <tr>
+                                    <th>Round</th>
+                                    <th>Multiplier</th>
+                                    <th>Stake</th>
+                                    <th>Outcome</th>
+                                    <th>Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${results.map(result => `
+                                    <tr>
+                                        <td>${result.round}</td>
+                                        <td>${result.multiplier}x</td>
+                                        <td>${result.stake}</td>
+                                        <td class="${result.outcome.toLowerCase()}">${result.outcome}</td>
+                                        <td>${result.balance}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            // --- Fixed Stake Feature ---
+
+            /**
+             * Shows modal to set fixed stake amount
+             */
+            function showSetStakeModal() {
+                const modal = document.createElement('div');
+                modal.className = 'custom-modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h3>Set Fixed Stake</h3>
+                        <div class="form-group">
+                            <label for="stake-amount">Stake Amount (Ksh):</label>
+                            <input type="number" id="stake-amount" min="10" max="${balance}" value="${fixedStake || ''}" placeholder="10-${balance}">
+                        </div>
+                        <p style="font-size: 0.9rem; color: var(--gray); margin-bottom: 1rem;">
+                            This stake will be used for all predictions until you logout or change it.
+                        </p>
+                        <div class="modal-buttons">
+                            <button id="cancel-stake" class="primary-btn" style="background-color: var(--gray);">Cancel</button>
+                            <button id="confirm-stake" class="primary-btn">Confirm</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+
+                // Event listeners for modal buttons
+                document.getElementById('cancel-stake').addEventListener('click', () => {
+                    document.body.removeChild(modal);
+                });
+
+                document.getElementById('confirm-stake').addEventListener('click', () => {
+                    const stakeInput = document.getElementById('stake-amount');
+                    const stakeValue = parseFloat(stakeInput.value);
+
+                    if (isNaN(stakeValue) || stakeValue < 10 || stakeValue > balance) {
+                        showAlert(`Please enter a valid amount between 10 and ${balance} Ksh`, 'error');
+                        return;
+                    }
+
+                    fixedStake = stakeValue;
+                    currentStakeDisplay.textContent = `Fixed Stake: ${fixedStake.toFixed(2)} Ksh`;
+                    showAlert(`Fixed stake set to ${fixedStake.toFixed(2)} Ksh`, 'success');
+                    document.body.removeChild(modal);
+                });
+            }
+
+            // --- Event Listeners ---
+
+            // Login System
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                showLoading();
+                
+                setTimeout(() => {
+                    const username = usernameInput.value.trim();
+                    const password = passwordInput.value.trim();
+                    
+                    if (username === 'admin' && password === '1234') {
+                        loginContainer.classList.add('hidden');
+                        predictorContainer.classList.remove('hidden');
+                        hideLoading();
+                        updateBankrollDisplay(); // Initialize display on login
+                        setupChart(); // Initialize chart on login
+                        showAlert('Welcome to Aviator Pro Predictor!', 'success');
+                    } else {
+                        loginError.textContent = 'Invalid username or password';
+                        hideLoading();
+                    }
+                }, 500);
+            });
+
+            logoutBtn.addEventListener('click', function() {
+                showLoading();
+                setTimeout(() => {
+                    predictorContainer.classList.add('hidden');
+                    loginContainer.classList.remove('hidden');
+                    resetPredictor();
+                    hideLoading();
+                    showAlert('Logged out successfully.', 'info');
+                }, 300);
+            });
+
+            // Multiplier Input with Risk Level Selection
+            enterMultipliersBtn.addEventListener('click', function() {
+                if (!checkCooldown()) return; // Check cooldown before prompting
+
+                // Reset multipliers for new input session
+                multipliers = [];
+                inputStartTime = Date.now();
+                
+                const modal = document.createElement('div');
+                modal.className = 'custom-modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h3>Enter Multipliers</h3>
+                        <div class="risk-level-selector form-group">
+                            <label for="modal-risk-level">Select your current risk level:</label>
+                            <select id="modal-risk-level">
+                                <option value="low" ${riskLevel === 'low' ? 'selected' : ''}>Low (Cautious)</option>
+                                <option value="medium" ${riskLevel === 'medium' ? 'selected' : ''}>Medium (Balanced)</option>
+                                <option value="high" ${riskLevel === 'high' ? 'selected' : ''}>High (Aggressive)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="multiplier-count">How many recent multipliers (5-10)?:</label>
+                            <input type="number" id="multiplier-count" min="5" max="10" value="5">
+                        </div>
+                        <div class="modal-buttons">
+                            <button id="cancel-multipliers" class="primary-btn" style="background-color: var(--gray);">Cancel</button>
+                            <button id="confirm-multipliers" class="primary-btn">Continue</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                
+                // Add event listeners to buttons within this modal
+                const removeModal = () => {
+                    document.body.removeChild(modal);
+                };
+
+                const confirmHandler = () => {
+                    const count = parseInt(document.getElementById('multiplier-count').value);
+                    riskLevel = document.getElementById('modal-risk-level').value; // Update global riskLevel
+                    
+                    if (isNaN(count) || count < 5 || count > 10) {
+                        showAlert('Please enter a number between 5 and 10.', 'error');
+                        return;
+                    }
+
+                    removeModal(); // Remove the initial settings modal
+                    showLoading();
+                    // Small delay to show loading, then start collecting individual multipliers
+                    setTimeout(() => {
+                        collectMultipliersWithModal(count); // Call the new modal-based collection for individual multipliers
+                        hideLoading();
+                    }, 300);
+                };
+
+                document.getElementById('confirm-multipliers').addEventListener('click', confirmHandler);
+                document.getElementById('cancel-multipliers').addEventListener('click', removeModal);
+            });
+
+            /**
+             * Recursively collects multiplier inputs from the user using a modal.
+             * @param {number} totalCount - The total number of multipliers to collect.
+             * @param {number} currentIndex - The current multiplier index being collected.
+             */
+            function collectMultipliersWithModal(totalCount, currentIndex = 0) {
+                if (currentIndex >= totalCount) {
+                    multipliersDisplay.innerHTML = `
+                        <p><b>Entered Multipliers:</b> ${multipliers.join(', ')}</p>
+                        <p><b>Your Risk Setting:</b> <span class="risk-badge ${riskLevel}">${riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)}</span></p>
+                    `;
+                    updateChart(multipliers); // Update chart immediately after collecting
+                    makePrediction(); // Run prediction
+                    return;
+                }
+
+                // Create the modal for entering a single multiplier
+                const multiplierInputModal = document.createElement('div');
+                multiplierInputModal.className = 'custom-modal';
+                multiplierInputModal.innerHTML = `
+                    <div class="modal-content">
+                        <h3>Enter Multiplier #${currentIndex + 1} of ${totalCount}</h3>
+                        <div class="form-group">
+                            <label for="current-multiplier-input">Multiplier (0.1-100.0):</label>
+                            <input type="number" id="current-multiplier-input" min="0.1" max="100" step="0.01" required>
+                        </div>
+                        <div class="modal-buttons">
+                            <button id="cancel-single-multiplier" class="primary-btn" style="background-color: var(--gray);">Cancel All</button>
+                            <button id="next-multiplier-input" class="primary-btn">${currentIndex === totalCount - 1 ? 'Finish' : 'Next'}</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(multiplierInputModal);
+
+                const currentMultiplierInput = document.getElementById('current-multiplier-input');
+                currentMultiplierInput.focus(); // Focus the input field for immediate typing
+
+                const removeSingleModal = () => {
+                    document.body.removeChild(multiplierInputModal);
+                };
+
+                const nextMultiplierHandler = () => {
+                    const val = parseFloat(currentMultiplierInput.value);
+                    if (isNaN(val) || val < 0.1 || val > 100) {
+                        showAlert("Invalid input. Please enter a number between 0.1 and 100.", 'error');
+                        return; // Stay in this modal, let user re-enter
+                    }
+                    multipliers.push(val);
+                    removeSingleModal();
+                    collectMultipliersWithModal(totalCount, currentIndex + 1); // Proceed to next multiplier
+                };
+
+                // Attach event listeners for the single multiplier modal's buttons
+                document.getElementById('next-multiplier-input').addEventListener('click', nextMultiplierHandler);
+                document.getElementById('cancel-single-multiplier').addEventListener('click', () => {
+                    removeSingleModal();
+                    multipliers = []; // Clear all inputs if cancelled midway
+                    multipliersDisplay.textContent = 'Multiplier input cancelled.';
+                    showAlert('Multiplier input session cancelled.', 'info');
+                });
+            }
+
+
+            // Strategy Buttons Event Listener
+            strategyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    strategyButtons.forEach(btn => btn.classList.remove('active')); // Deactivate all
+                    this.classList.add('active'); // Activate clicked one
+                    currentStrategy = this.dataset.strategy; // Update current strategy
+                    showAlert(`Strategy set to ${currentStrategy.charAt(0).toUpperCase() + currentStrategy.slice(1)} (${this.dataset.multiplier}x target)`, 'info');
+                    // If multipliers are already entered, re-run prediction to update recommendation
+                    if (multipliers.length > 0) {
+                        makePrediction();
+                    }
+                });
+            });
+
+            // Analytics Tabs functionality
+            analyticsTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    analyticsTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(`${this.dataset.tab}-tab`).classList.add('active');
+                });
+            });
+
+            // Fixed Stake Button
+            setStakeBtn.addEventListener('click', showSetStakeModal);
+
+            // Backtest Button
+            runBacktestBtn.addEventListener('click', runBacktest);
+
+            // Initial calls on page load (after login)
+            updateBankrollDisplay();
+            setupChart();
+        });
+    </script>
 </body>
 </html>
